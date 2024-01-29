@@ -1,6 +1,7 @@
 import os
 import h5py
 
+
 class HDF5Analyzer:
     def __init__(self, folder_path):
         self.folder_path = folder_path
@@ -29,4 +30,3 @@ class HDF5Analyzer:
                 self._explore_group(item, indent + 1)
             elif isinstance(item, h5py.Dataset):
                 print("  " * indent + f"Dataset: {name}")
-

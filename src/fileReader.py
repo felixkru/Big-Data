@@ -13,7 +13,7 @@ class HDF5Analyzer:
             if file_name.endswith('.h5') and os.path.isfile(file_path):
                 print(f"Analysiere Datei: {file_name}")
                 self.analyze_file(file_path)
-                print("-" * 40)  # Trennlinie für bessere Lesbarkeit
+                print("-" * 40)
 
     def analyze_file(self, file_path):
         try:

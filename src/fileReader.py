@@ -30,3 +30,5 @@ class HDF5Analyzer:
                 self._explore_group(item, indent + 1)
             elif isinstance(item, h5py.Dataset):
                 print("  " * indent + f"Dataset: {name}")
+
+    #TODO analyse der Unterordner einer H5 Datei.

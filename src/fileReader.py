@@ -1,29 +1,35 @@
 import os
 import h5py
+import numpy as np
+import matplotlib.pyplot as plt
 
 
 class HDF5Analyzer:
+
     def __init__(self, folder_path):
         self.folder_path = folder_path
 
-    def analyze_files(self):
-        files = files = os.listdir(self.folder_path)
-        for file_name in files:
-            file_path = os.path.join(self.folder_path, file_name)
-            if file_name.endswith('.h5') and os.path.isfile(file_path):
-                try:
-                    with h5py.File(file_path, 'r') as file:
-                        print(f"Struktur der Datei {file_path}:")
-                        self._explore_group(file)
-                except Exception as e:
-                    print(f"Fehler beim Analysieren der Datei {file_path}: {str(e)}")
+    def read_files(self):
+        files = os.listdir(self.folder_path)
+        for file in files:
+            file_path = os.path.join(self.folder_path, file)
+            if file.endswith('.h5'):
+                self.read_h5_files_data(file_path)
 
-    def _explore_group(self, group, indent=0):
-        for name, item in group.items():
-            if isinstance(item, h5py.Group):
-                print("  " * indent + f"Group: {name}")
-                self._explore_group(item, indent + 1)
-            elif isinstance(item, h5py.Dataset):
-                print("  " * indent + f"Dataset: {name}")
+    def read_h5_files_data(self, file_path):
+        with h5py.File(file_path, 'r') as hdf:
+            key_view = hdf.keys()
+            key = 'data' if 'data' in key_view else ''
+            if key != '':
+                data_group = hdf[key]
+                for member_name in data_group:
+                    member = data_group[member_name]
+                    if isinstance(member, h5py.Dataset):
+                        data = np.array(member[:])
+                        self.visualize_data(data, member_name)
 
-    #TODO analyse der Unterordner einer H5 Datei.
+
+    def visualize_data(self, data, member_name):
+        plt.plot(data)
+        plt.title(f"Visualisierung für {member_name}")
+        plt.show()

@@ -28,7 +28,6 @@ class HDF5Analyzer:
                     if isinstance(member, h5py.Dataset):
                         data = np.array(member[:])
                         oh_detector = oh.outlier_handler(data)
-                        oh_detector.tukeys_detection()
                         self.visualize_data(data, member_name)
                         self.visualize_data(oh_detector.zscore_detection(), member_name)
                         self.visualize_data(oh_detector.tukeys_detection(), member_name)

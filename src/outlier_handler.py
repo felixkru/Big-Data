@@ -7,15 +7,13 @@ class outlier_handler:
         self.file = file
         self.file_2 = file
 
-    ##z-score
     def zscore_detection(self):
 
         try:
 
-            mean_X = np.mean(self.file)
-            std_X = np.std(self.file)
-            z_scores = (self.file - mean_X) / std_X
-            ##outliers = np.where(np.abs(z_scores) > 3)
+            mean = np.mean(self.file)
+            std = np.std(self.file)
+            z_scores = (self.file - mean) / std
             inliers = np.where(np.abs(z_scores) <= 3)
             filtered_data = self.file[inliers]
         
@@ -28,17 +26,16 @@ class outlier_handler:
             print("Error:", str(e))
 
 
-    ##Tukeys Method
     def tukeys_detection(self):
 
         try:
        
-            Q1 = np.percentile(self.file_2, 25)
-            Q3 = np.percentile(self.file_2, 75)
-            IQR = Q3 - Q1
+            q1 = np.percentile(self.file_2, 25)
+            q3 = np.percentile(self.file_2, 75)
+            iqr = q3 - q1
 
-            lower_bound = Q1 - 1.5 * IQR
-            upper_bound = Q3 + 1.5 * IQR
+            lower_bound = q1 - 1.5 * iqr
+            upper_bound = q3 + 1.5 * iqr
 
             inliers = np.where((self.file_2 >= lower_bound) & (self.file_2 <= upper_bound))
             filtered_data = self.file_2[inliers]

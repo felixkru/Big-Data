@@ -7,11 +7,12 @@ from dateutil import parser
 import csv
 
 
-class HDF5Analyzer:
+class Visualize_Grouped_Timestamps_And_Export_To_CSV:
 
     def __init__(self, folder_path):
         self.folder_path = folder_path
         self.all_timestamps = []
+        self.timestamps_by_decade = {}
 
     def read_files(self):
         files = os.listdir(self.folder_path)
@@ -49,6 +50,18 @@ class HDF5Analyzer:
                             print(f"Unlesbarer Zeitstempel: {ts} in {item.name}")
                             continue
 
+                        try:
+                            ts_converted = parser.parse(ts_str)
+                        except (ValueError, TypeError, AttributeError):
+                            print(f"Unlesbarer Zeitstempel: {ts} in {item.name}")
+                            continue
+
+                        decade = (ts_converted.year // 10) * 10
+                        if decade not in self.timestamps_by_decade:
+                            self.timestamps_by_decade[decade] = []
+
+                        self.timestamps_by_decade[decade].append(ts_converted)
+
                     self.all_timestamps.append(ts_converted)
 
         elif isinstance(item, h5py.Group):
@@ -71,16 +84,16 @@ class HDF5Analyzer:
     def write_timestamps_to_csv(self, filepath):
         with open(filepath, 'w', newline='') as file:
             writer = csv.writer(file)
+            writer.writerow(['Index', 'Datum', 'Jahrzehnt'])
 
-            writer.writerow(['Index', 'Datum'])
-
-            for index, dt in enumerate(self.all_timestamps):
-                dt_str = dt.strftime('%Y-%m-%d %H:%M:%S')
-                writer.writerow([index, dt_str])
+            for decade, timestamps in sorted(self.timestamps_by_decade.items()):
+                for index, dt in enumerate(timestamps):
+                    dt_str = dt.strftime('%Y-%m-%d %H:%M:%S')
+                    writer.writerow([index, dt_str, str(decade)])
 
 
 # Nutzung:
 if __name__ == "__main__":
-    analyzer = HDF5Analyzer('A:/Program Files/Git/Big-Data/dataset')
+    analyzer = Visualize_Grouped_Timestamps_And_Export_To_CSV('A:/Program Files/Git/Big-Data/dataset')
     analyzer.read_files()
     analyzer.write_timestamps_to_csv('A:/Program Files/Git/Big-Data/Ausgabe/timestamp.csv')

@@ -1,5 +1,9 @@
 import FileReader_Timefilter
 
-folder_path = 'A:/Program Files/Git/Big-Data/dataset'
-analyzer = FileReader_Timefilter.HDF5Analyzer(folder_path)
-analyzer.analyze_files()
+folder_path = "dataset"
+
+if __name__ == "__main__":
+
+    analyzer = fileReader.HDF5Analyzer(folder_path)
+    analyzer.read_files()
+

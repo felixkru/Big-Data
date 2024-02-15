@@ -3,10 +3,12 @@ import os
 
 class CheckData:
 
-    def __init__(self, folder_path):
-        self.folder_path = folder_path
+    def __init__(self):
 
-    def count_files(self):
-        files = os.listdir(self.folder_path)
-        return len(files)
+
+    def check_sub_set_length(self, sub_set):
+
+
+
+
 

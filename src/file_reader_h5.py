@@ -48,6 +48,6 @@ class HDF5Analyzer:
 
 
 if __name__ == "__main__":
-    path = "../test"
+    path = "../dataset"
     analyzer = HDF5Analyzer(path)
     dataset = HDF5Analyzer.open_h5_files_and_return_sub_group_data(analyzer.open_file_and_create_path())

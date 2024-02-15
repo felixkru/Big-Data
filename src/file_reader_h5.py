@@ -42,7 +42,6 @@ class HDF5Analyzer:
             complete_sub_data_set = []
         return all_data
 
-    @staticmethod
     def handle_file_reader(self):
         folder_paths = self.open_file_and_create_path()
         return self.open_h5_files_and_return_sub_group_data(folder_paths)

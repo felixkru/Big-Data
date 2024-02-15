@@ -1,13 +1,13 @@
-import os
 import h5py
-import numpy as np
-import matplotlib.pyplot as plt
 from datetime import datetime, timezone
 from dateutil import parser
-import csv
+import os
+import matplotlib.pyplot as plt
+import numpy as np
+from matplotlib.dates import DateFormatter
 
 
-class Visualize_Grouped_Timestamps_And_Export_To_CSV:
+class Visualize_Organized_Timestamps:
 
     def __init__(self, folder_path):
         self.folder_path = folder_path
@@ -20,7 +20,6 @@ class Visualize_Grouped_Timestamps_And_Export_To_CSV:
             file_path = os.path.join(self.folder_path, file)
             if file.endswith('.h5'):
                 self.extract_and_print_timestamps(file_path)
-        self.visualize_timestamps()
 
     def extract_and_print_timestamps(self, file_path):
         with h5py.File(file_path, 'r') as hdf:
@@ -30,21 +29,17 @@ class Visualize_Grouped_Timestamps_And_Export_To_CSV:
 
     def inspect_group(self, item, name_prefix=''):
         if isinstance(item, h5py.Dataset):
-            # add --> spezifische Schlüsselnamen prüfen, die auf Zeitstempel hinweisen
             if 'time' in name_prefix.lower() or 'timestamp' in name_prefix.lower():
                 print(f"Zeitstempel gefunden in: {name_prefix}, Daten: {item[:]}")
 
-                # Hier wird für jedes Element in item geprüft und konvertiert
                 for ts in item[:]:
 
                     try:
-                        # Versuche, als Unix-Zeitstempel zu interpretieren
                         ts_converted = datetime.fromtimestamp(int(ts), timezone.utc)
                     except (ValueError, TypeError):
 
-                        # Falls das fehlschlägt, verarbeite als ISO-Format String
                         try:
-                            ts_str = ts.decode('utf-8')  # Funktioniert nur, wenn ts ein Bytes-Objekt ist
+                            ts_str = ts.decode('utf-8')
                             ts_converted = parser.parse(ts_str)
                         except (ValueError, TypeError, AttributeError):
                             print(f"Unlesbarer Zeitstempel: {ts} in {item.name}")
@@ -68,32 +63,27 @@ class Visualize_Grouped_Timestamps_And_Export_To_CSV:
             for name in item:
                 self.inspect_group(item[name], name_prefix=f"{name_prefix}/{name}")
 
-    def visualize_timestamps(self):
-        dates = [dt.replace(tzinfo=None) for dt in self.all_timestamps]
+    def visualize_timestamps_by_decade(self):
+        fig, ax = plt.subplots(figsize=(10, 6))
+        colors = plt.cm.jet(np.linspace(0, 1, len(self.timestamps_by_decade)))  # Farbpalette
 
-        # Einfacher Plot: Datum gegen Index
-        plt.figure(figsize=(10, 6))
-        plt.plot(dates, np.arange(len(dates)), marker='o', linestyle='-')
-        plt.xlabel('Datum')
-        plt.ylabel('Zeitstempel Index')
-        plt.title('Visualisierung der gefundenen Zeitstempel')
+        for (decade, timestamps), color in zip(sorted(self.timestamps_by_decade.items()), colors):
+            dates = [ts.replace(tzinfo=None) for ts in timestamps]  # Entferne Zeitzone für Plotting
+            counts = list(range(len(dates)))  # Einfache Zählvariable für Y-Achse
+
+            ax.plot(dates, counts, marker='o', linestyle='-', color=color, label=str(decade))
+
+        ax.set_xlabel('Datum')
+        ax.set_ylabel('Anzahl der Zeitstempel')
+        ax.set_title('Zeitstempel pro Jahrzehnt')
+        ax.xaxis.set_major_formatter(DateFormatter('%Y-%m-%d'))
         plt.xticks(rotation=45)
+        plt.legend(title='Jahrzehnt')
         plt.tight_layout()
         plt.show()
 
-    def write_timestamps_to_csv(self, filepath):
-        with open(filepath, 'w', newline='') as file:
-            writer = csv.writer(file)
-            writer.writerow(['Index', 'Datum', 'Jahrzehnt'])
-
-            for decade, timestamps in sorted(self.timestamps_by_decade.items()):
-                for index, dt in enumerate(timestamps):
-                    dt_str = dt.strftime('%Y-%m-%d %H:%M:%S')
-                    writer.writerow([index, dt_str, str(decade)])
-
-
 # Nutzung:
 if __name__ == "__main__":
-    analyzer = Visualize_Grouped_Timestamps_And_Export_To_CSV('A:/Program Files/Git/Big-Data/dataset')
-    analyzer.read_files()
-    analyzer.write_timestamps_to_csv('A:/Program Files/Git/Big-Data/Ausgabe/timestamp.csv')
+        analyzer = Visualize_Organized_Timestamps('A:/Program Files/Git/Big-Data/dataset')
+        analyzer.read_files()
+        analyzer.visualize_timestamps_by_decade()

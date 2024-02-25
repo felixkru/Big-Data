@@ -2,7 +2,8 @@ import os
 import h5py
 import numpy as np
 import matplotlib.pyplot as plt
-import outlier_handler as oh
+import outlierhandler as oh
+import time
 
 
 class HDF5Analyzer:
@@ -27,13 +28,14 @@ class HDF5Analyzer:
                     member = data_group[member_name]
                     if isinstance(member, h5py.Dataset):
                         data = np.array(member[:])
-                        oh_detector = oh.outlier_handler(data)
+                        oh_detector = oh.OutlierHandler(data)
                         self.visualize_data(data, member_name)
                         self.visualize_data(oh_detector.zscore_detection(), member_name)
                         self.visualize_data(oh_detector.tukeys_detection(), member_name)
-
+                        time.sleep(0.2)
 
     def visualize_data(self, data, member_name):
-        plt.plot(data)
-        plt.title(f"Visualisierung für {member_name}")
-        plt.show()
+        if data is not None:
+            plt.plot(data)
+            plt.title(f"Visualisierung für {member_name}")
+            plt.show()

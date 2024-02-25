@@ -1,7 +1,7 @@
 import numpy as np
 
 
-class outlier_handler:
+class OutlierHandler:
 
     def __init__(self, file):
         self.file = file
@@ -13,6 +13,8 @@ class outlier_handler:
 
             mean = np.mean(self.file)
             std = np.std(self.file)
+            if std == 0:
+                return None
             z_scores = (self.file - mean) / std
             inliers = np.where(np.abs(z_scores) <= 3)
             filtered_data = self.file[inliers]

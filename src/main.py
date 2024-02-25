@@ -1,6 +1,6 @@
 import fileReader
 
-folder_path = "dataset"
+folder_path = "../dataset"
 
 if __name__ == "__main__":
 

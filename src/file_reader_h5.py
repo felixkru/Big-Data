@@ -1,6 +1,7 @@
 import os
 import h5py
 from check_data import CheckData
+import numpy as np
 
 
 class SubGroupData:
@@ -59,21 +60,26 @@ class HDF5Analyzer:
                         for item in sub_group_data_set:
                             if 'defect_channel' in item:
                                 checked_value = CheckData.check_array_length(item['defect_channel'])
+                                checked_value = HDF5Analyzer.parse_type_to_float(checked_value)
                                 defect_channel = {'defect_channel': checked_value}
                                 dataset_from_file.append(defect_channel)
 
                             if 'magnetization' in item:
                                 checked_value = CheckData.check_array_length(item['magnetization'])
+                                checked_value = HDF5Analyzer.parse_type_to_float(checked_value)
                                 magnetization = {'magnetization': checked_value}
                                 dataset_from_file.append(magnetization)
 
-                            if 'distance' in item or 'distance_1' in item or 'DISTANCE1' in item:
+                            if 'distance' in item or 'distance_' in item or 'DISTANCE' in item:
                                 if 'distance' in item:
                                     checked_value = CheckData.check_array_length(item['distance'])
+                                    checked_value = HDF5Analyzer.parse_type_to_float(checked_value)
                                 elif 'distance_' in item:
                                     checked_value = CheckData.check_array_length(item['distance_'])
+                                    checked_value = HDF5Analyzer.parse_type_to_float(checked_value)
                                 else:
                                     checked_value = CheckData.check_array_length(item['DISTANCE'])
+                                    checked_value = HDF5Analyzer.parse_type_to_float(checked_value)
                                 distance = {'distance': checked_value}
                                 dataset_from_file.append(distance)
 
@@ -83,12 +89,12 @@ class HDF5Analyzer:
                                     velocity = {'velocity': item['velocity']}
                                     data_preparation_and_conversion.append(velocity)
                                 else:
+                                    checked_value = HDF5Analyzer.parse_type_to_float(checked_value)
                                     velocity = {'velocity': checked_value}
                                     dataset_from_file.append(velocity)
 
             current_file_id += 1
             all_data.append(dataset_from_file)
-            print(all_data)
         return all_data
 
     def handle_file_reader(self):
@@ -116,6 +122,14 @@ class HDF5Analyzer:
         attributes.append(instrument_attribute)
 
         return attributes
+
+    @staticmethod
+    def parse_type_to_float(data):
+        try:
+            checked_value = np.frombuffer(data, dtype=np.float64)
+            return checked_value
+        except ValueError as e:
+            print("ValueError:", e)
 
 
 if __name__ == "__main__":

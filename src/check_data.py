@@ -13,6 +13,8 @@ class CheckData:
             for group in group_set:
                 if 'time' in group.group:
                     timestamp = CheckData.handle_timestamp(group.data)
+                    group.group = timestamp
+        return data_set
 
     @staticmethod
     def handle_timestamp(timestamps):

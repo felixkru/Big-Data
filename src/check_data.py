@@ -44,3 +44,11 @@ class CheckData:
     @staticmethod
     def calculate_velocity(data_timestamp, data_distance):
         velocity = data_timestamp - data_distance
+
+    @staticmethod
+    def check_array_length(defect_channel):
+        if len(defect_channel) == 1000:
+            return defect_channel
+        else:
+            print("Zu wenig Daten in dem Array!")
+            return []

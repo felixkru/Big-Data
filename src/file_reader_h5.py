@@ -1,5 +1,6 @@
 import os
 import h5py
+from check_data import CheckData
 
 
 class SubGroupData:
@@ -48,9 +49,42 @@ class HDF5Analyzer:
                         dataset_from_file.append(attributes[0])
                         dataset_from_file.append(attributes[1])
 
+                        sub_group_data_set = []
                         for sub_group in h5py_file[key]:
                             data = h5py_file[key][sub_group][()]
-                            sub_group_data = SubGroupData(sub_group, data)
+                            complete_set = {sub_group: data}
+                            sub_group_data_set.append(complete_set)
+
+                        data_preparation_and_conversion = []
+                        for item in sub_group_data_set:
+                            if 'defect_channel' in item:
+                                checked_value = CheckData.check_array_length(item['defect_channel'])
+                                defect_channel = {'defect_channel': checked_value}
+                                dataset_from_file.append(defect_channel)
+
+                            if 'magnetization' in item:
+                                checked_value = CheckData.check_array_length(item['magnetization'])
+                                magnetization = {'magnetization': checked_value}
+                                dataset_from_file.append(magnetization)
+
+                            if 'distance' in item or 'distance_1' in item or 'DISTANCE1' in item:
+                                if 'distance' in item:
+                                    checked_value = CheckData.check_array_length(item['distance'])
+                                elif 'distance_' in item:
+                                    checked_value = CheckData.check_array_length(item['distance_'])
+                                else:
+                                    checked_value = CheckData.check_array_length(item['DISTANCE'])
+                                distance = {'distance': checked_value}
+                                dataset_from_file.append(distance)
+
+                            if 'velocity' in item:
+                                checked_value = CheckData.check_array_length(item['velocity'])
+                                if len(checked_value) == 0:
+                                    velocity = {'velocity': item['velocity']}
+                                    data_preparation_and_conversion.append(velocity)
+                                else:
+                                    velocity = {'velocity': checked_value}
+                                    dataset_from_file.append(velocity)
 
             current_file_id += 1
             all_data.append(dataset_from_file)

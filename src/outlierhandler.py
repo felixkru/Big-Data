@@ -16,22 +16,21 @@ class OutlierHandler:
             if std == 0:
                 return None
             z_scores = (self.file - mean) / std
-            inliers = np.where(np.abs(z_scores) <= 3)
-            filtered_data = self.file[inliers]
-        
+            inliners = np.where(np.abs(z_scores) <= 3)
+            filtered_data = self.file[inliners]
+
             return filtered_data
-        
+
         except ZeroDivisionError:
             print("Zero division is forbidden.")
 
         except Exception as e:
             print("Error:", str(e))
 
-
     def tukeys_detection(self):
 
         try:
-       
+
             q1 = np.percentile(self.file_2, 25)
             q3 = np.percentile(self.file_2, 75)
             iqr = q3 - q1
@@ -39,11 +38,11 @@ class OutlierHandler:
             lower_bound = q1 - 1.5 * iqr
             upper_bound = q3 + 1.5 * iqr
 
-            inliers = np.where((self.file_2 >= lower_bound) & (self.file_2 <= upper_bound))
-            filtered_data = self.file_2[inliers]
+            inliners = np.where((self.file_2 >= lower_bound) & (self.file_2 <= upper_bound))
+            filtered_data = self.file_2[inliners]
 
             return filtered_data
-        
+
         except ZeroDivisionError:
             print("Zero division is forbidden.")
 

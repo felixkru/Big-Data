@@ -8,38 +8,19 @@ class CheckData:
         pass
 
     @staticmethod
-    def check_sub_set_timestamp(data_set):
-        for group_set in data_set:
-            for group in group_set:
-                if 'time' in group.group:
-                    timestamp = CheckData.handle_timestamp(group.data)
-                    group.group = timestamp
-        return data_set
+    def convert_float_to_date(timestamps):
+        new_timestamps = []
+        start_date = datetime.datetime(1970, 1, 1)
 
-    @staticmethod
-    def handle_timestamp(timestamps):
-        dates = []
         for timestamp in timestamps:
             try:
-                if isinstance(timestamp, bytes):
-                    try:
-                        timestamp_str = timestamp.decode('utf-8')
-                        timestamp_float = float(timestamp_str)
-                    except UnicodeDecodeError:
-                        continue
+                converted_timestamp = start_date + datetime.timedelta(seconds=timestamp)
+                new_timestamps.append(converted_timestamp)
+            except Exception as error:
+                print("Can't convert to Date:", timestamp)
+                print("Error:", error)
 
-                elif isinstance(timestamp, np.float64):
-                    timestamp_float = float(timestamp)
-
-                else:
-                    print("Ungültiger Zeitstempel-Format:", timestamp)
-                    continue
-
-                date = datetime.datetime.fromtimestamp(timestamp_float)
-                dates.append(date)
-            except Exception as e:
-                print("Fehler beim Konvertieren eines Zeitstempels:", e)
-        return dates
+        return new_timestamps
 
     @staticmethod
     def calculate_velocity(data_timestamp, data_distance):
@@ -56,8 +37,28 @@ class CheckData:
     @staticmethod
     def parse_type_to_float(data):
         try:
-            checked_value = np.frombuffer(data, dtype=np.float64)
-            return checked_value
+            return np.frombuffer(data, dtype=np.float64)
         except ValueError as e:
             print("ValueError:", e)
             return []
+
+    @staticmethod
+    def calculate_velocity_from_time_and_distance(distances, timestamps, velocitys):
+        if len(timestamps['timestamp']) == 1000 and len(distances['distance']) == 1000:
+            complete_velocity = []
+
+            for index, timestamp in enumerate(timestamps['timestamp']):
+                distance = distances['distance'][index]
+                timestamp = timestamps['timestamp'][index]
+
+                if index < len(velocitys['velocity']):
+                    velocity = velocitys['velocity'][index]
+                    complete_velocity.append(velocity)
+
+                else:
+                    time_difference = timestamp - timestamps['timestamp'][index - 1]
+                    distance_difference = (distance - distances['distance'][index - 1])
+                    velocity = distance_difference / time_difference * 1000
+                    complete_velocity.append(velocity)
+
+            return complete_velocity

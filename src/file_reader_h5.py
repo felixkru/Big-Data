@@ -1,7 +1,6 @@
 import os
 import h5py
 from check_data import CheckData
-import numpy as np
 
 
 class SubGroupData:
@@ -57,7 +56,10 @@ class HDF5Analyzer:
                             sub_group_data_set.append(complete_set)
 
                         data_preparation_and_conversion = []
+                        count_calls_on_update_velocity = 0
+
                         for item in sub_group_data_set:
+
                             if 'defect_channel' in item:
                                 checked_value = CheckData.check_array_length(item['defect_channel'])
                                 checked_value = CheckData.parse_type_to_float(checked_value)
@@ -76,7 +78,7 @@ class HDF5Analyzer:
                                 magnetization = {'magnetization': checked_value}
                                 dataset_from_file.append(magnetization)
 
-                            if 'distance' in item or 'distance_1' in item or 'DISTANCE1' in item:
+                            if 'distance' in item or 'distance_' in item or 'DISTANCE' in item:
                                 if 'distance' in item:
                                     checked_value = CheckData.check_array_length(item['distance'])
                                     checked_value = CheckData.parse_type_to_float(checked_value)
@@ -90,6 +92,13 @@ class HDF5Analyzer:
                                 data_preparation_and_conversion.append(distance)
                                 dataset_from_file.append(distance)
 
+                            if 'timestamp' in item:
+                                checked_value = CheckData.check_array_length(item['timestamp'])
+                                checked_value = CheckData.parse_type_to_float(checked_value)
+                                timestamp = {'timestamp': checked_value}
+                                data_preparation_and_conversion.append(timestamp)
+                                dataset_from_file.append(timestamp)
+
                             if 'velocity' in item:
                                 checked_value = CheckData.check_array_length(item['velocity'])
                                 if len(checked_value) == 0:
@@ -99,6 +108,12 @@ class HDF5Analyzer:
                                     checked_value = CheckData.parse_type_to_float(checked_value)
                                     velocity = {'velocity': checked_value}
                                     dataset_from_file.append(velocity)
+
+                            if len(data_preparation_and_conversion) == 3 and count_calls_on_update_velocity < 1:
+                                count_calls_on_update_velocity += 1
+                                velocity = CheckData.calculate_velocity_from_time_and_distance(data_preparation_and_conversion[0], data_preparation_and_conversion[1], data_preparation_and_conversion[2])
+                                new_velocity = {'velocity': velocity}
+                                dataset_from_file.append(new_velocity)
 
             current_file_id += 1
             all_data.append(dataset_from_file)

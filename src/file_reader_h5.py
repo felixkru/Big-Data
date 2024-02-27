@@ -111,7 +111,9 @@ class HDF5Analyzer:
 
                             if len(data_preparation_and_conversion) == 3 and count_calls_on_update_velocity < 1:
                                 count_calls_on_update_velocity += 1
-                                velocity = CheckData.calculate_velocity_from_time_and_distance(data_preparation_and_conversion[0], data_preparation_and_conversion[1], data_preparation_and_conversion[2])
+                                velocity = CheckData.calculate_velocity_from_time_and_distance(
+                                    data_preparation_and_conversion[0], data_preparation_and_conversion[1],
+                                    data_preparation_and_conversion[2])
                                 new_velocity = {'velocity': velocity}
                                 dataset_from_file.append(new_velocity)
 

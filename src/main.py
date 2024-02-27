@@ -7,4 +7,3 @@ if __name__ == "__main__":
     dataset = analyzer.handle_file_reader()
 
     print(dataset)
-

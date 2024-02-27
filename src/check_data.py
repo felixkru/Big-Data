@@ -52,3 +52,12 @@ class CheckData:
         else:
             print("Zu wenig Daten in dem Array!")
             return []
+
+    @staticmethod
+    def parse_type_to_float(data):
+        try:
+            checked_value = np.frombuffer(data, dtype=np.float64)
+            return checked_value
+        except ValueError as e:
+            print("ValueError:", e)
+            return []

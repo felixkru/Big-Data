@@ -7,7 +7,6 @@ if __name__ == "__main__":
     analyzer = file_reader_h5.HDF5Analyzer(path)
 
     dataset = analyzer.handle_file_reader()
-    print(dataset)
 
     mongoConnection.send_data_to_mongo(dataset)
 

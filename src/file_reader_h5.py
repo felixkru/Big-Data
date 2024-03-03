@@ -32,7 +32,6 @@ class HDF5Analyzer:
         all_data = []
 
         for file in file_paths:
-            dataset_from_file = []
             single_dataset = {
                 "file_id": current_file_id,
                 "file_name": HDF5Analyzer.create_file_name(file),
@@ -45,12 +44,6 @@ class HDF5Analyzer:
                 "timestamp": "",
                 "velocity": ""
             }
-
-            file_id = {"file_id": current_file_id}
-            dataset_from_file.append(file_id)
-
-            filename = {"file_name": HDF5Analyzer.create_file_name(file)}
-            dataset_from_file.append(filename)
 
             with h5py.File(file, 'r') as h5py_file:
 
@@ -75,22 +68,16 @@ class HDF5Analyzer:
                             if 'defect_channel' in item:
                                 checked_value = CheckData.check_array_length(item['defect_channel'])
                                 checked_value = CheckData.parse_type_to_float(checked_value)
-                                defect_channel = {'defect_channel': checked_value}
-                                dataset_from_file.append(defect_channel)
                                 single_dataset["defect_channel"] = list(checked_value)
 
                             if 'wall_thickness' in item:
                                 checked_value = CheckData.check_array_length(item['wall_thickness'])
                                 checked_value = CheckData.parse_type_to_float(checked_value)
-                                wall_thickness = {'wall_thickness': checked_value}
-                                dataset_from_file.append(wall_thickness)
                                 single_dataset["wall_thickness"] = list(checked_value)
 
                             if 'magnetization' in item:
                                 checked_value = CheckData.check_array_length(item['magnetization'])
                                 checked_value = CheckData.parse_type_to_float(checked_value)
-                                magnetization = {'magnetization': checked_value}
-                                dataset_from_file.append(magnetization)
                                 single_dataset["magnetization"] = list(checked_value)
 
                             if 'distance' in item or 'distance_' in item or 'DISTANCE' in item:
@@ -105,7 +92,6 @@ class HDF5Analyzer:
                                     checked_value = CheckData.parse_type_to_float(checked_value)
                                 distance = {'distance': checked_value}
                                 data_preparation_and_conversion.append(distance)
-                                dataset_from_file.append(distance)
                                 single_dataset["distance"] = list(checked_value)
 
                             if 'timestamp' in item:
@@ -113,7 +99,6 @@ class HDF5Analyzer:
                                 checked_value = CheckData.parse_type_to_float(checked_value)
                                 timestamp = {'timestamp': checked_value}
                                 data_preparation_and_conversion.append(timestamp)
-                                dataset_from_file.append(timestamp)
                                 single_dataset["timestamp"] = list(checked_value)
 
                             if 'velocity' in item:
@@ -123,8 +108,6 @@ class HDF5Analyzer:
                                     data_preparation_and_conversion.append(velocity)
                                 else:
                                     checked_value = CheckData.parse_type_to_float(checked_value)
-                                    velocity = {'velocity': checked_value}
-                                    dataset_from_file.append(velocity)
                                     single_dataset["velocity"] = list(checked_value)
 
                             if len(data_preparation_and_conversion) == 3 and count_calls_on_update_velocity < 1:
@@ -133,7 +116,6 @@ class HDF5Analyzer:
                                     data_preparation_and_conversion[0], data_preparation_and_conversion[1],
                                     data_preparation_and_conversion[2])
                                 new_velocity = {'velocity': velocity}
-                                dataset_from_file.append(new_velocity)
                                 single_dataset["velocity"] = list(new_velocity)
 
             current_file_id += 1

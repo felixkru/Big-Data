@@ -119,7 +119,9 @@ class HDF5Analyzer:
                                 velocity = CheckData.calculate_velocity_from_time_and_distance(
                                     data_preparation_and_conversion[0], data_preparation_and_conversion[1],
                                     data_preparation_and_conversion[2])
+
                                 single_dataset["velocity"] = list(velocity)
+
 
             current_file_id += 1
             all_data.append(single_dataset)

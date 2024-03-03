@@ -23,10 +23,6 @@ class CheckData:
         return new_timestamps
 
     @staticmethod
-    def calculate_velocity(data_timestamp, data_distance):
-        velocity = data_timestamp - data_distance
-
-    @staticmethod
     def check_array_length(array):
         if len(array) == 1000:
             return array
@@ -43,7 +39,7 @@ class CheckData:
             return []
 
     @staticmethod
-    def calculate_velocity_from_time_and_distance(distances, timestamps, velocitys):
+    def calculate_velocity_from_time_and_distance(distances, velocities, timestamps):
         if len(timestamps['timestamp']) == 1000 and len(distances['distance']) == 1000:
             complete_velocity = []
 
@@ -51,8 +47,8 @@ class CheckData:
                 distance = distances['distance'][index]
                 timestamp = timestamps['timestamp'][index]
 
-                if index < len(velocitys['velocity']):
-                    velocity = velocitys['velocity'][index]
+                if index < len(velocities['velocity']):
+                    velocity = velocities['velocity'][index]
                     complete_velocity.append(velocity)
 
                 else:

@@ -129,9 +129,8 @@ class HDF5Analyzer:
 
                             if len(data_preparation_and_conversion) == 3 and count_calls_on_update_velocity < 1:
                                 count_calls_on_update_velocity += 1
-                                velocity = CheckData.calculate_velocity_from_time_and_distance(
-                                    data_preparation_and_conversion[0], data_preparation_and_conversion[1],
-                                    data_preparation_and_conversion[2])
+                                data_for_calculation = HDF5Analyzer.handle_and_set_correct_attributes_for_velocity_calculation(data_preparation_and_conversion)
+                                velocity = CheckData.calculate_velocity_from_time_and_distance(data_for_calculation[0], data_for_calculation[1], data_for_calculation[2])
                                 new_velocity = {'velocity': velocity}
                                 dataset_from_file.append(new_velocity)
                                 single_dataset["velocity"] = list(new_velocity)
@@ -143,6 +142,23 @@ class HDF5Analyzer:
     def handle_file_reader(self):
         folder_paths = self.open_file_and_create_path()
         return self.open_h5_files_and_return_file_data(folder_paths)
+
+    @staticmethod
+    def handle_and_set_correct_attributes_for_velocity_calculation(data):
+        response = [0, 0, 0]
+
+        for data_set in data:
+
+            if 'distance' in data_set:
+                response[0] = {'distance': data_set['distance']}
+
+            if 'velocity' in data_set:
+                response[1] = {'velocity': data_set['velocity']}
+
+            if 'timestamp' in data_set:
+                response[2] = {'timestamp': data_set['timestamp']}
+
+        return response
 
     @staticmethod
     def create_file_name(file_path):

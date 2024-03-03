@@ -94,8 +94,12 @@ class HDF5Analyzer:
                                 data_preparation_and_conversion.append(distance)
                                 single_dataset["distance"] = list(checked_value)
 
-                            if 'timestamp' in item:
-                                checked_value = CheckData.check_array_length(item['timestamp'])
+                            if 'timestamp' in item or 'TIMESTAMP' in item:
+                                if 'timestamp' in item:
+                                    checked_value = CheckData.check_array_length(item['timestamp'])
+                                else:
+                                    checked_value = CheckData.check_array_length(item['TIMESTAMP'])
+
                                 checked_value = CheckData.parse_type_to_float(checked_value)
                                 timestamp = {'timestamp': checked_value}
                                 data_preparation_and_conversion.append(timestamp)
@@ -115,8 +119,9 @@ class HDF5Analyzer:
                                 velocity = CheckData.calculate_velocity_from_time_and_distance(
                                     data_preparation_and_conversion[0], data_preparation_and_conversion[1],
                                     data_preparation_and_conversion[2])
-                                new_velocity = {'velocity': velocity}
-                                single_dataset["velocity"] = list(new_velocity)
+
+                                single_dataset["velocity"] = list(velocity)
+
 
             current_file_id += 1
             all_data.append(single_dataset)

@@ -1,10 +1,9 @@
-import numpy
 import file_reader_h5
 import mongoConnection
 
 
 if __name__ == "__main__":
-    path = "../dataset"
+    path = "../test"
     analyzer = file_reader_h5.HDF5Analyzer(path)
 
     dataset = analyzer.handle_file_reader()

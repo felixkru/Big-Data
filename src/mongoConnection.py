@@ -7,7 +7,7 @@ uri = ""
 def send_data_to_mongo(processed_datasets):
     client = MongoClient(uri, server_api=ServerApi('1'))
     database = client['Big-D']
-    collection = database['raw_measurements']
+    collection = database['raw_measurements_v2']
     try:
         collection.insert_many(processed_datasets)
 

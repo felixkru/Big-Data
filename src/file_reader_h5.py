@@ -30,6 +30,7 @@ class HDF5Analyzer:
     def open_h5_files_and_return_file_data(file_paths):
         current_file_id = 1
         all_data = []
+        counter = 0
 
         for file in file_paths:
             single_dataset = {
@@ -119,7 +120,8 @@ class HDF5Analyzer:
                                 data_for_calculation = HDF5Analyzer.handle_and_set_correct_attributes_for_velocity_calculation(data_preparation_and_conversion)
                                 velocity = CheckData.calculate_velocity_from_time_and_distance(data_for_calculation[0], data_for_calculation[1], data_for_calculation[2])
 
-                                single_dataset["velocity"] = list(velocity)
+                                if velocity is not None:
+                                    single_dataset["velocity"] = list(velocity)
 
             current_file_id += 1
             all_data.append(single_dataset)

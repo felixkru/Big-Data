@@ -1,3 +1,4 @@
 h5py>=3.10.0
 numpy>=1.26.3
 matplotlib>=3.8.2
+datetime>=5.4

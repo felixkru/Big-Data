@@ -30,24 +30,30 @@ class HDF5Analyzer:
     def open_h5_files_and_return_file_data(file_paths):
         current_file_id = 1
         all_data = []
+        counter = 0
 
         for file in file_paths:
-            dataset_from_file = []
-
-            file_id = {"file_id": current_file_id}
-            dataset_from_file.append(file_id)
-
-            filename = {"file_name": HDF5Analyzer.create_file_name(file)}
-            dataset_from_file.append(filename)
+            single_dataset = {
+                "file_id": current_file_id,
+                "file_name": HDF5Analyzer.create_file_name(file),
+                "region": "",
+                "instrument": "",
+                "defect_channel": "",
+                "wall_thickness": "",
+                "magnetization": "",
+                "distance": "",
+                "timestamp": "",
+                "velocity": ""
+            }
 
             with h5py.File(file, 'r') as h5py_file:
 
                 keys = list(h5py_file.keys())
                 if 'data' in keys or 'Daten' in keys:
                     for key in keys:
-                        attributes = HDF5Analyzer.return_file_attributes(h5py_file[key].attrs.items())
-                        dataset_from_file.append(attributes[0])
-                        dataset_from_file.append(attributes[1])
+                        region, instrument = HDF5Analyzer.return_file_attributes(h5py_file[key].attrs.items())
+                        single_dataset["region"] = region
+                        single_dataset["instrument"] = instrument
 
                         sub_group_data_set = []
                         for sub_group in h5py_file[key]:
@@ -63,20 +69,17 @@ class HDF5Analyzer:
                             if 'defect_channel' in item:
                                 checked_value = CheckData.check_array_length(item['defect_channel'])
                                 checked_value = CheckData.parse_type_to_float(checked_value)
-                                defect_channel = {'defect_channel': checked_value}
-                                dataset_from_file.append(defect_channel)
+                                single_dataset["defect_channel"] = list(checked_value)
 
                             if 'wall_thickness' in item:
                                 checked_value = CheckData.check_array_length(item['wall_thickness'])
                                 checked_value = CheckData.parse_type_to_float(checked_value)
-                                wall_thickness = {'wall_thickness': checked_value}
-                                dataset_from_file.append(wall_thickness)
+                                single_dataset["wall_thickness"] = list(checked_value)
 
                             if 'magnetization' in item:
                                 checked_value = CheckData.check_array_length(item['magnetization'])
                                 checked_value = CheckData.parse_type_to_float(checked_value)
-                                magnetization = {'magnetization': checked_value}
-                                dataset_from_file.append(magnetization)
+                                single_dataset["magnetization"] = list(checked_value)
 
                             if 'distance' in item or 'distance_' in item or 'DISTANCE' in item:
                                 if 'distance' in item:
@@ -90,14 +93,18 @@ class HDF5Analyzer:
                                     checked_value = CheckData.parse_type_to_float(checked_value)
                                 distance = {'distance': checked_value}
                                 data_preparation_and_conversion.append(distance)
-                                dataset_from_file.append(distance)
+                                single_dataset["distance"] = list(checked_value)
 
-                            if 'timestamp' in item:
-                                checked_value = CheckData.check_array_length(item['timestamp'])
+                            if 'timestamp' in item or 'TIMESTAMP' in item:
+                                if 'timestamp' in item:
+                                    checked_value = CheckData.check_array_length(item['timestamp'])
+                                else:
+                                    checked_value = CheckData.check_array_length(item['TIMESTAMP'])
+
                                 checked_value = CheckData.parse_type_to_float(checked_value)
                                 timestamp = {'timestamp': checked_value}
                                 data_preparation_and_conversion.append(timestamp)
-                                dataset_from_file.append(timestamp)
+                                single_dataset["timestamp"] = list(checked_value)
 
                             if 'velocity' in item:
                                 checked_value = CheckData.check_array_length(item['velocity'])
@@ -106,19 +113,18 @@ class HDF5Analyzer:
                                     data_preparation_and_conversion.append(velocity)
                                 else:
                                     checked_value = CheckData.parse_type_to_float(checked_value)
-                                    velocity = {'velocity': checked_value}
-                                    dataset_from_file.append(velocity)
+                                    single_dataset["velocity"] = list(checked_value)
 
                             if len(data_preparation_and_conversion) == 3 and count_calls_on_update_velocity < 1:
                                 count_calls_on_update_velocity += 1
-                                velocity = CheckData.calculate_velocity_from_time_and_distance(
-                                    data_preparation_and_conversion[0], data_preparation_and_conversion[1],
-                                    data_preparation_and_conversion[2])
-                                new_velocity = {'velocity': velocity}
-                                dataset_from_file.append(new_velocity)
+                                data_for_calculation = HDF5Analyzer.handle_and_set_correct_attributes_for_velocity_calculation(data_preparation_and_conversion)
+                                velocity = CheckData.calculate_velocity_from_time_and_distance(data_for_calculation[0], data_for_calculation[1], data_for_calculation[2])
+
+                                if velocity is not None:
+                                    single_dataset["velocity"] = list(velocity)
 
             current_file_id += 1
-            all_data.append(dataset_from_file)
+            all_data.append(single_dataset)
         return all_data
 
     def handle_file_reader(self):
@@ -126,26 +132,39 @@ class HDF5Analyzer:
         return self.open_h5_files_and_return_file_data(folder_paths)
 
     @staticmethod
+    def handle_and_set_correct_attributes_for_velocity_calculation(data):
+        response = [0, 0, 0]
+
+        for data_set in data:
+
+            if 'distance' in data_set:
+                response[0] = {'distance': data_set['distance']}
+
+            if 'velocity' in data_set:
+                response[1] = {'velocity': data_set['velocity']}
+
+            if 'timestamp' in data_set:
+                response[2] = {'timestamp': data_set['timestamp']}
+
+        return response
+
+    @staticmethod
     def create_file_name(file_path):
         return os.path.splitext(os.path.basename(file_path))[0]
 
     @staticmethod
     def return_file_attributes(file):
-        attributes = []
 
-        region_attribute = {"region": "None"}
-        instrument_attribute = {"instrument": "None"}
+        region_attribute = ""
+        instrument_attribute = ""
 
         for item in file:
             if item[0] == 'configuration':
-                region_attribute = {"region": item[1]}
+                region_attribute = item[1]
             elif item[0] == 'instrument':
-                instrument_attribute = {"instrument": item[1]}
+                instrument_attribute = item[1]
 
-        attributes.append(region_attribute)
-        attributes.append(instrument_attribute)
-
-        return attributes
+        return region_attribute, instrument_attribute
 
 
 if __name__ == "__main__":

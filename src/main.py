@@ -1,11 +1,12 @@
 import file_reader_h5
 import mongoConnection
-
+from calculate_location_parameters import CalculateLocationParameters
 
 if __name__ == "__main__":
     path = "../dataset"
     analyzer = file_reader_h5.HDF5Analyzer(path)
     dataset = analyzer.handle_file_reader()
+    full_dataset = CalculateLocationParameters.handle_update_average_and_median_calculation(dataset)
 """
     mongoConnection.send_data_to_mongo(dataset)
 """

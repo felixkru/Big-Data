@@ -40,7 +40,7 @@ def read_data_from_mongo(query=None):
 def count_data_from_mongo(query=None):
     client = MongoClient(uri, server_api=ServerApi('1'))
     database = client['Big-D']
-    collection = database['raw_measurements']
+    collection = database['raw_measurements_v2']
     if query is None:
         query = {}
     try:

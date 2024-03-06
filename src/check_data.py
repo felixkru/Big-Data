@@ -27,7 +27,43 @@ class CheckData:
         if len(array) == 1000:
             return array
         else:
-            return []
+            np.array([])
+
+    @staticmethod
+    def handle_ascii_string(array):
+        new_array = []
+        try:
+            for data_set in array:
+                float_number = float(data_set)
+                new_array.append(float_number)
+            return new_array
+        except ValueError as e:
+            return np.array([])
+
+    @staticmethod
+    def handel_byte_string(array):
+        new_array = []
+        try:
+            for data_set in array:
+                byte_string = data_set.decode('utf-8')
+                float_number = float(byte_string)
+                new_array.append(float_number)
+            return new_array
+        except ValueError as e:
+            return np.array([])
+
+    @staticmethod
+    def handle_easter_egg(array, filename):
+        new_array = []
+        print(filename)
+        for data_set in array:
+            try:
+                byte_string = data_set.decode('utf-8')
+                float_number = float(byte_string)
+                new_array.append(float_number)
+            except ValueError:
+                new_array.append(0)
+        return new_array
 
     @staticmethod
     def parse_type_to_float(data):

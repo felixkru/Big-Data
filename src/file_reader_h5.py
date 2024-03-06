@@ -71,7 +71,7 @@ class HDF5Analyzer:
                                 checked_value = CheckData.parse_type_to_float(checked_value)
                                 single_dataset["defect_channel"] = list(checked_value)
 
-                            if 'wall_thickness' in item or 'WALL_THICKNESS' in item:
+                            if 'wall_thickness4' in item or 'WALL_THICKNESS3' in item:
                                 if 'wall_thickness' in item:
                                     checked_value = CheckData.check_array_length(item['wall_thickness'])
                                     checked_value = CheckData.parse_type_to_float(checked_value)
@@ -108,8 +108,25 @@ class HDF5Analyzer:
 
                                 single_dataset["magnetization"] = list(checked_value)
 
+                            if 'distance' in item or 'distance_' in item or 'DISTANCE' in item:
+                                if 'distance' in item:
+                                    checked_value = CheckData.check_array_length(item['distance'])
+                                    checked_value = CheckData.parse_type_to_float(checked_value)
 
+                                    if len(checked_value) != 1000:
+                                        checked_value = CheckData.handle_ascii_string(item['distance'])
 
+                                elif 'distance_' in item:
+                                    checked_value = CheckData.check_array_length(item['distance_'])
+                                    checked_value = CheckData.parse_type_to_float(checked_value)
+
+                                elif 'DISTANCE' in item:
+                                    checked_value = CheckData.check_array_length(item['DISTANCE'])
+                                    checked_value = CheckData.parse_type_to_float(checked_value)
+
+                                distance = {'distance': checked_value}
+                                data_preparation_and_conversion.append(distance)
+                                single_dataset["distance"] = list(checked_value)
 
 
 

@@ -115,6 +115,15 @@ class HDF5Analyzer:
                                     checked_value = CheckData.parse_type_to_float(checked_value)
                                     single_dataset["velocity"] = list(checked_value)
 
+                            if 'Velocity' in item:
+                                checked_value = CheckData.check_array_length(item['Velocity'])
+                                if len(checked_value) == 0:
+                                    velocity = {'velocity': item['Velocity']}
+                                    data_preparation_and_conversion.append(velocity)
+                                else:
+                                    checked_value = CheckData.parse_type_to_float(checked_value)
+                                    single_dataset["velocity"] = list(checked_value)
+
                             if len(data_preparation_and_conversion) == 3 and count_calls_on_update_velocity < 1:
                                 count_calls_on_update_velocity += 1
                                 data_for_calculation = HDF5Analyzer.handle_and_set_correct_attributes_for_velocity_calculation(data_preparation_and_conversion)

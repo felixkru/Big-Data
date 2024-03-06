@@ -17,7 +17,7 @@ if __name__ == "__main__":
     print(query_content)
 """
 """So kann man z.B. die namen der datensätze ermitteln bei denen dein query zu trifft."""
-query_content = mongoConnection.read_data_from_mongo({"timestamp": ""})
+#query_content = mongoConnection.read_data_from_mongo({"timestamp": ""})
 
-for data in query_content:
-    print(data['file_name'])
+#for data in query_content:
+#   print(data['file_name'])

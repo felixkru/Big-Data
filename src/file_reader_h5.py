@@ -128,6 +128,18 @@ class HDF5Analyzer:
                                 data_preparation_and_conversion.append(distance)
                                 single_dataset["distance"] = list(checked_value)
 
+                            if 'timestamp' in item or 'TIMESTAMP' in item:
+                                if 'timestamp' in item:
+                                    checked_value = CheckData.check_array_length(item['timestamp'])
+                                elif 'TIMESTAMP' in item:
+                                    checked_value = CheckData.check_array_length(item['TIMESTAMP'])
+
+                                checked_value = CheckData.parse_type_to_float(checked_value)
+                                CheckData.convert_float_to_date(checked_value)
+
+                                timestamp = {'timestamp': checked_value}
+                                data_preparation_and_conversion.append(timestamp)
+                                single_dataset["timestamp"] = list(checked_value)
 
 
 
@@ -137,7 +149,8 @@ class HDF5Analyzer:
 
 
 
-                            if len(data_preparation_and_conversion) == 3 and count_calls_on_update_velocity < 1:
+
+                            if len(data_preparation_and_conversion) == 4 and count_calls_on_update_velocity < 1:
                                 count_calls_on_update_velocity += 1
                                 data_for_calculation = HDF5Analyzer.handle_and_set_correct_attributes_for_velocity_calculation(
                                     data_preparation_and_conversion)

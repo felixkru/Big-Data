@@ -71,8 +71,12 @@ class HDF5Analyzer:
                                 checked_value = CheckData.parse_type_to_float(checked_value)
                                 single_dataset["defect_channel"] = list(checked_value)
 
-                            if 'wall_thickness' in item:
-                                checked_value = CheckData.check_array_length(item['wall_thickness'])
+                            if 'wall_thickness' in item or 'WALL_THICKNESS':
+                                if 'wall_thickness' in item:
+                                    checked_value = CheckData.check_array_length(item['wall_thickness'])
+                                if 'WALL_THICKNESS' in item:
+                                    checked_value = CheckData.check_array_length(item['WALL_THICKNESS'])
+
                                 checked_value = CheckData.parse_type_to_float(checked_value)
                                 single_dataset["wall_thickness"] = list(checked_value)
 

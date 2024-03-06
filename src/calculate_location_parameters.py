@@ -22,13 +22,13 @@ class CalculateLocationParameters:
         for data_array in data_set:
 
             try:
-                data_array["velocity_median"] = CalculateLocationParameters.calculate_median(data_array['velocity'])
+                #data_array["velocity_median"] = CalculateLocationParameters.calculate_median(data_array['velocity'])
                 data_array["wall_thickness_median"] = CalculateLocationParameters.calculate_median(data_array['wall_thickness'])
-                data_array["magnetization_median"] = CalculateLocationParameters.calculate_median(data_array['magnetization'])
+                #data_array["magnetization_median"] = CalculateLocationParameters.calculate_median(data_array['magnetization'])
 
-                data_array["velocity_average"] = CalculateLocationParameters.calculate_average(data_array['velocity'])
+                #data_array["velocity_average"] = CalculateLocationParameters.calculate_average(data_array['velocity'])
                 data_array["wall_thickness_average"] = CalculateLocationParameters.calculate_average(data_array['wall_thickness'])
-                data_array["magnetization_average"] = CalculateLocationParameters.calculate_average(data_array['magnetization'])
+                #data_array["magnetization_average"] = CalculateLocationParameters.calculate_average(data_array['magnetization'])
 
             except Exception as e:
                 print("Fehler beim Errechnen des Medians oder des Durchschnitts: ", e)

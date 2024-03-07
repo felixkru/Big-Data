@@ -167,12 +167,11 @@ class HDF5Analyzer:
                                 count_calls_on_update_velocity += 1
                                 data_for_calculation = HDF5Analyzer.handle_and_set_correct_attributes_for_velocity_calculation(data_preparation_and_conversion)
                                 velocity = CheckData.calculate_velocity_from_time_and_distance(data_for_calculation[0], data_for_calculation[1], data_for_calculation[2])
-                                print(data_preparation_and_conversion[2].keys())
 
                                 if velocity is not None:
                                     single_dataset["velocity"] = list(velocity)
-                                #else:
-                                    #print(file_name)
+                                else:
+                                    print(file_name)
 
             current_file_id += 1
             all_data.append(single_dataset)

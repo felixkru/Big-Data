@@ -30,7 +30,6 @@ class HDF5Analyzer:
     def open_h5_files_and_return_file_data(file_paths):
         current_file_id = 1
         all_data = []
-        my_counter = 0
 
         for file in file_paths:
             file_name = HDF5Analyzer.create_file_name(file)
@@ -80,8 +79,6 @@ class HDF5Analyzer:
                                         if not checked_value:
                                             checked_value = CheckData.handel_byte_string(item['wall_thickness'])
                                             CheckData.handle_easter_egg(item['wall_thickness'], file_name)
-                                            print(my_counter)
-                                            my_counter += 1
 
                                 if 'WALL_THICKNESS' in item:
                                     checked_value = CheckData.check_array_length(item['WALL_THICKNESS'])
@@ -91,8 +88,6 @@ class HDF5Analyzer:
                                         if not checked_value:
                                             checked_value = CheckData.handel_byte_string(item['WALL_THICKNESS'])
                                             CheckData.handle_easter_egg(item['wall_thickness'], file_name)
-                                            print(my_counter)
-                                            my_counter += 1
 
                                 single_dataset["wall_thickness"] = list(checked_value)
 
@@ -141,27 +136,43 @@ class HDF5Analyzer:
                                 data_preparation_and_conversion.append(timestamp)
                                 single_dataset["timestamp"] = list(checked_value)
 
+                            if 'velocity' in item:
+                                checked_value = CheckData.check_array_length(item['velocity'])
+                                if len(checked_value) == 0:
+                                    velocity = {'velocity': item['velocity']}
+                                    data_preparation_and_conversion.append(velocity)
+                                else:
+                                    checked_value = CheckData.parse_type_to_float(checked_value)
+                                    single_dataset["velocity"] = list(checked_value)
 
+                            if 'Velocity5' in item:
+                                checked_value = CheckData.check_array_length(item['Velocity'])
+                                if len(checked_value) == 0:
+                                    velocity = {'velocity': item['Velocity']}
+                                    data_preparation_and_conversion.append(velocity)
+                                else:
+                                    checked_value = CheckData.parse_type_to_float(checked_value)
+                                    single_dataset["velocity"] = list(checked_value)
 
+                            if 'velocity_5' in item:
+                                checked_value = CheckData.check_array_length(item['velocity_'])
+                                if len(checked_value) == 0:
+                                    velocity = {'velocity': item['velocity_']}
+                                    data_preparation_and_conversion.append(velocity)
+                                else:
+                                    checked_value = CheckData.parse_type_to_float(checked_value)
+                                    single_dataset["velocity"] = list(checked_value)
 
-
-
-
-
-
-
-                            if len(data_preparation_and_conversion) == 4 and count_calls_on_update_velocity < 1:
+                            if len(data_preparation_and_conversion) == 3 and count_calls_on_update_velocity < 1:
                                 count_calls_on_update_velocity += 1
-                                data_for_calculation = HDF5Analyzer.handle_and_set_correct_attributes_for_velocity_calculation(
-                                    data_preparation_and_conversion)
-                                velocity = CheckData.calculate_velocity_from_time_and_distance(data_for_calculation[0],
-                                                                                               data_for_calculation[1],
-                                                                                               data_for_calculation[2])
+                                data_for_calculation = HDF5Analyzer.handle_and_set_correct_attributes_for_velocity_calculation(data_preparation_and_conversion)
+                                velocity = CheckData.calculate_velocity_from_time_and_distance(data_for_calculation[0], data_for_calculation[1], data_for_calculation[2])
+                                print(data_preparation_and_conversion[2].keys())
 
                                 if velocity is not None:
                                     single_dataset["velocity"] = list(velocity)
-                                else:
-                                    print(file_name)
+                                #else:
+                                    #print(file_name)
 
             current_file_id += 1
             all_data.append(single_dataset)

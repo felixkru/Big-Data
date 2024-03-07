@@ -27,7 +27,7 @@ class CheckData:
         if len(array) == 1000:
             return array
         else:
-            np.array([])
+            return np.array([])
 
     @staticmethod
     def handle_ascii_string(array):
@@ -55,7 +55,9 @@ class CheckData:
     @staticmethod
     def handle_easter_egg(array, filename):
         new_array = []
-        print(filename)
+        #print("Easteregg")
+        #print(filename)
+        #print()
         for data_set in array:
             try:
                 byte_string = data_set.decode('utf-8')

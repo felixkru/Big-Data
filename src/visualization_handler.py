@@ -8,8 +8,14 @@ class VisualizationHandler:
 
     @staticmethod
     def handle_scatter_chart_with_one_argument(data_sets):
+        visual_data = VisualisationData()
 
-        pass
+        magnetization = {"magnetization": data_sets['magnetization']}
+        velocity = {"velocity": data_sets['velocity']}
+        wall_thickness = {"wall_thickness": data_sets['wall_thickness']}
+        defect_channel = {"defect_channel": data_sets['defect_channel']}
+
+        visual_data.create_scatter_plot(magnetization, data_sets['file_name'])
 
     @staticmethod
     def handle_scatter_chart_with_multiple_arguments(data_sets):
@@ -22,6 +28,6 @@ class VisualizationHandler:
 
         relevant_sets = [magnetization, velocity, defect_channel, wall_thickness]
 
-        visual_data.create_scatterplot_with_different_data_src(relevant_sets)
+        visual_data.create_scatterplot_with_different_data_src(relevant_sets, data_sets['file_name'])
 
 

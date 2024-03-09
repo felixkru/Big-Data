@@ -9,7 +9,8 @@ if __name__ == "__main__":
 
     #Logik
     dataset = analyzer.handle_file_reader()
-    visualization_handler.handle_scatter_chart_with_multiple_arguments(dataset[0])
+    #visualization_handler.handle_scatter_chart_with_multiple_arguments(dataset[0])
+    visualization_handler.handle_scatter_chart_with_one_argument(dataset[0])
 """
     mongoConnection.send_data_to_mongo(dataset)
 """

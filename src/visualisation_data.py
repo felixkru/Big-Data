@@ -7,7 +7,7 @@ class VisualisationData:
         pass
 
     @staticmethod
-    def create_scatter_plot(y_ax_data):
+    def create_scatter_plot(y_ax_data, file_name):
         y_key = list(y_ax_data.keys())[0]
         y_values = y_ax_data[y_key]
         index_data = list(range(len(list(y_ax_data.values())[0])))
@@ -19,10 +19,11 @@ class VisualisationData:
 
         plt.plot(y_values, linestyle='dotted')
         plt.grid()
+        plt.title(file_name)
         plt.show()
 
     @staticmethod
-    def create_scatterplot_with_different_data_src(data_sets):
+    def create_scatterplot_with_different_data_src(data_sets, file_name):
         index_data = list(range(len(list(data_sets[0].values())[0])))
 
         fig, ax = plt.subplots()
@@ -39,6 +40,7 @@ class VisualisationData:
 
         plt.legend()
         plt.grid()
+        plt.title(file_name)
         plt.show()
 
 

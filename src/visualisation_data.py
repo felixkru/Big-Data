@@ -1,4 +1,6 @@
 import matplotlib.pyplot as plt
+import numpy as np
+
 
 class VisualisationData:
 
@@ -6,24 +8,29 @@ class VisualisationData:
         pass
 
     @staticmethod
-    def create_scatter_plot(x_ax_data, y_ax_data):
-        x_key = list(x_ax_data.keys())[0]
-        x_values = x_ax_data[x_key]
-
+    def create_scatter_plot(y_ax_data):
         y_key = list(y_ax_data.keys())[0]
         y_values = y_ax_data[y_key]
 
-        plt.style.use('_mpl-gallery')
+        index_data = []
+        index = 0
+
+        for value in y_values:
+            index_data.append(index)
+            index += 1
+
         fig, ax = plt.subplots()
 
-        ax.set_xlabel(x_key)
         ax.set_ylabel(y_key)
-        ax.scatter(x_values, y_values)
+        ax.set_xlabel("Point-Nr.")
 
+        ax.scatter(index_data, y_values)
+
+        plt.plot(y_values, linestyle='dotted')
+        plt.grid()
         plt.show()
 
-if __name__ == '__main__':
-    x_data = {"distance": [14, 12, 3, -3.4, 5, 25, 7, 8, 9, 10]}
-    y_data = {"timestamp": [8, 12, 3, -3.4, 5, 25, 7, 8, 14, -3]}
 
-    VisualisationData.create_scatter_plot(x_data, y_data)
+if __name__ == '__main__':
+    y_data = {"distance": [8, 12, 3, -3.4, 5, 25, 7, 8, 14, -3, 44]}
+    VisualisationData.create_scatter_plot(y_data)

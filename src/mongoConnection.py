@@ -1,13 +1,16 @@
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
+import certifi
 
-uri = ""
+uri = "mongodb+srv://felixkruse:eQgAyNbfBXeO5JIs@cluster0.bkat9hf.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+ca = certifi.where()
+default_client = MongoClient(uri, server_api=ServerApi('1'), tlsCAFile=ca)
 
 
 def send_data_to_mongo(processed_datasets):
-    client = MongoClient(uri, server_api=ServerApi('1'))
+    client = default_client
     database = client['Big-D']
-    collection = database['raw_measurements_v2']
+    collection = database['raw_measurements_v3']
     try:
         collection.insert_many(processed_datasets)
 
@@ -19,9 +22,9 @@ def send_data_to_mongo(processed_datasets):
 
 
 def read_data_from_mongo(query=None):
-    client = MongoClient(uri, server_api=ServerApi('1'))
+    client = default_client
     database = client['Big-D']
-    collection = database['raw_measurements']
+    collection = database['raw_measurements_v3']
     query_result = []
     if query is None:
         query = {}
@@ -38,7 +41,7 @@ def read_data_from_mongo(query=None):
 
 
 def count_data_from_mongo(query=None):
-    client = MongoClient(uri, server_api=ServerApi('1'))
+    client = default_client
     database = client['Big-D']
     collection = database['raw_measurements_v2']
     if query is None:

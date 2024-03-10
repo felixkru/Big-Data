@@ -65,7 +65,7 @@ class HDF5Analyzer:
 
                         for item in sub_group_data_set:
                             if 'defect_channel' in item:
-                                checked_value = CheckData.parse_type_to_float(checked_value)
+                                checked_value = CheckData.parse_type_to_float(item['defect_channel'])
                                 single_dataset["defect_channel"] = list(checked_value)
 
                             if 'wall_thickness' in item or 'WALL_THICKNESS' in item:
@@ -112,7 +112,7 @@ class HDF5Analyzer:
 
                                 single_dataset["distance"] = list(checked_value)
 
-                            if 'timestamp5' in item or 'TIMESTAMP5' in item:
+                            if 'timestamp' in item or 'TIMESTAMP' in item:
                                 if 'timestamp' in item:
                                     checked_value = CheckData.check_array_length(item['timestamp'])
                                 elif 'TIMESTAMP' in item:

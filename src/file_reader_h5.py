@@ -68,21 +68,29 @@ class HDF5Analyzer:
                                 checked_value = CheckData.parse_type_to_float(item['defect_channel'])
                                 single_dataset["defect_channel"] = list(checked_value)
 
-                            if 'wall_thickness' in item or 'WALL_THICKNESS' in item:
+                            if 'wall_thickness' in item or 'WALL_THICKNESS' in item or 'wall_thickness_' in item:
                                 if 'wall_thickness' in item:
-                                    checked_value = CheckData.parse_type_to_float(checked_value)
+                                    checked_value = CheckData.parse_type_to_float(item['wall_thickness'])
                                     if len(checked_value) != 1000:
                                         checked_value = CheckData.handle_ascii_string(item['wall_thickness'])
                                         if not checked_value:
                                             checked_value = CheckData.handel_byte_string(item['wall_thickness'])
                                             CheckData.handle_easter_egg(item['wall_thickness'], file_name)
 
-                                if 'WALL_THICKNESS5' in item:
-                                    checked_value = CheckData.parse_type_to_float(checked_value)
+                                if 'WALL_THICKNESS' in item:
+                                    checked_value = CheckData.parse_type_to_float(item['WALL_THICKNESS'])
                                     if len(checked_value) != 1000:
                                         checked_value = CheckData.handle_ascii_string(item['WALL_THICKNESS'])
                                         if not checked_value:
                                             checked_value = CheckData.handel_byte_string(item['WALL_THICKNESS'])
+                                            CheckData.handle_easter_egg(item['wall_thickness'], file_name)
+
+                                if 'wall_thickness_' in item:
+                                    checked_value = CheckData.parse_type_to_float(item['wall_thickness_'])
+                                    if len(checked_value) != 1000:
+                                        checked_value = CheckData.handle_ascii_string(item['wall_thickness_'])
+                                        if not checked_value:
+                                            checked_value = CheckData.handel_byte_string(item['wall_thickness_'])
                                             CheckData.handle_easter_egg(item['wall_thickness'], file_name)
 
                                 single_dataset["wall_thickness"] = list(checked_value)
@@ -112,42 +120,29 @@ class HDF5Analyzer:
 
                                 single_dataset["distance"] = list(checked_value)
 
-                            if 'timestamp' in item or 'TIMESTAMP' in item:
+                            if 'timestamp' in item or 'TIMESTAMP' in item or 'timestamp_' in item:
                                 if 'timestamp' in item:
                                     checked_value = CheckData.check_array_length(item['timestamp'])
-                                elif 'TIMESTAMP' in item:
+                                if 'TIMESTAMP' in item:
                                     checked_value = CheckData.check_array_length(item['TIMESTAMP'])
+                                if 'timestamp_' in item:
+                                    checked_value = CheckData.check_array_length(item['timestamp_'])
 
                                 checked_value = CheckData.parse_type_to_float(checked_value)
                                 CheckData.convert_float_to_date(checked_value)
                                 single_dataset["timestamp"] = list(checked_value)
 
-                            if 'velocity5' in item:
-                                checked_value = CheckData.check_array_length(item['velocity'])
-                                if len(checked_value) == 0:
-                                    velocity = {'velocity': item['velocity']}
-                                    data_preparation_and_conversion.append(velocity)
-                                else:
-                                    checked_value = CheckData.parse_type_to_float(checked_value)
-                                    single_dataset["velocity"] = list(checked_value)
+                            if 'velocity' in item or 'VELOCITY' in item or 'velocity_' in item:
+                                if 'velocity' in item:
+                                    checked_value = CheckData.parse_type_to_float(item['velocity'])
 
-                            if 'Velocity5' in item:
-                                checked_value = CheckData.check_array_length(item['Velocity'])
-                                if len(checked_value) == 0:
-                                    velocity = {'velocity': item['Velocity']}
-                                    data_preparation_and_conversion.append(velocity)
-                                else:
-                                    checked_value = CheckData.parse_type_to_float(checked_value)
-                                    single_dataset["velocity"] = list(checked_value)
+                                if 'Velocity' in item:
+                                    checked_value = CheckData.parse_type_to_float(item['Velocity'])
 
-                            if 'velocity_5' in item:
-                                checked_value = CheckData.check_array_length(item['velocity_'])
-                                if len(checked_value) == 0:
-                                    velocity = {'velocity': item['velocity_']}
-                                    data_preparation_and_conversion.append(velocity)
-                                else:
-                                    checked_value = CheckData.parse_type_to_float(checked_value)
-                                    single_dataset["velocity"] = list(checked_value)
+                                if 'velocity_' in item:
+                                    checked_value = CheckData.parse_type_to_float(item['velocity_'])
+
+                                single_dataset["velocity"] = list(checked_value)
 
             current_file_id += 1
             all_data.append(single_dataset)

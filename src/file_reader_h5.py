@@ -61,8 +61,6 @@ class HDF5Analyzer:
                             complete_set = {sub_group: data}
                             sub_group_data_set.append(complete_set)
 
-                        data_preparation_and_conversion = []
-
                         for item in sub_group_data_set:
                             if 'defect_channel' in item:
                                 checked_value = CheckData.parse_type_to_float(item['defect_channel'])
@@ -96,7 +94,7 @@ class HDF5Analyzer:
                                 single_dataset["wall_thickness"] = list(checked_value)
 
                             if 'magnetization' in item:
-                                checked_value = CheckData.parse_type_to_float(checked_value)
+                                checked_value = CheckData.parse_type_to_float(item['magnetization'])
 
                                 if len(checked_value) != 1000:
                                     checked_value = CheckData.handle_ascii_string(item['magnetization'])
@@ -108,15 +106,15 @@ class HDF5Analyzer:
 
                             if 'distance' in item or 'distance_' in item or 'DISTANCE' in item:
                                 if 'distance' in item:
-                                    checked_value = CheckData.parse_type_to_float(checked_value)
+                                    checked_value = CheckData.parse_type_to_float(item['distance'])
                                     if len(checked_value) != 1000:
                                         checked_value = CheckData.handle_ascii_string(item['distance'])
 
                                 elif 'distance_' in item:
-                                    checked_value = CheckData.parse_type_to_float(checked_value)
+                                    checked_value = CheckData.parse_type_to_float(item['distance_'])
 
                                 elif 'DISTANCE' in item:
-                                    checked_value = CheckData.parse_type_to_float(checked_value)
+                                    checked_value = CheckData.parse_type_to_float(item['DISTANCE'])
 
                                 single_dataset["distance"] = list(checked_value)
 

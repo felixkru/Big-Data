@@ -55,9 +55,6 @@ class CheckData:
     @staticmethod
     def handle_easter_egg(array, filename):
         new_array = []
-        #print("Easteregg")
-        #print(filename)
-        #print()
         for data_set in array:
             try:
                 byte_string = data_set.decode('utf-8')
@@ -76,7 +73,7 @@ class CheckData:
             return []
 
     @staticmethod
-    def calculate_velocity_from_time_and_distance(distances, velocities, timestamps):
+    def calculate_velocity_from_time_and_distance(distances, velocities, timestamps, file_name):
         if len(timestamps['timestamp']) == 1000 and len(distances['distance']) == 1000:
             complete_velocity = []
 
@@ -95,3 +92,5 @@ class CheckData:
                     complete_velocity.append(velocity)
 
             return complete_velocity
+        else:
+            print("Fehler in Timestamp oder Distance: ", file_name)

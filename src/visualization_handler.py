@@ -1,4 +1,5 @@
 from visualisation_data import VisualisationData
+import mongoConnection
 
 
 class VisualizationHandler:
@@ -30,4 +31,21 @@ class VisualizationHandler:
 
         visual_data.create_scatterplot_with_different_data_src(relevant_sets, data_sets['file_name'])
 
+    @staticmethod
+    def handle_pie_chart_regions():
+        regions = ["Africa", "Europe", "Asia", "Australia", "America"]
+        title = "Configuration"
+        results_per_region = []
+        visual_data = VisualisationData()
+
+        for region in regions:
+            result = mongoConnection.count_data_from_mongo({"region": region})
+
+            if result:
+                results_per_region.append(result)
+            else:
+                results_per_region.append(0)
+
+        mongoConnection.close_mongo_client()
+        visual_data.create_pie_chart(results_per_region, regions, title)
 

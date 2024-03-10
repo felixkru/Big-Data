@@ -23,6 +23,13 @@ class VisualisationData:
         plt.show()
 
     @staticmethod
+    def create_pie_chart(data_set, data_labels, pie_title):
+        plt.pie(data_set, labels=data_labels, autopct='%1.1f%%')
+        plt.title(pie_title)
+        plt.gca().set_axis_off()
+        plt.show()
+
+    @staticmethod
     def create_scatterplot_with_different_data_src(data_sets, file_name):
         index_data = list(range(len(list(data_sets[0].values())[0])))
 
@@ -46,11 +53,16 @@ class VisualisationData:
 
 if __name__ == '__main__':
     y_data = {"distance": [8, 12, 3, -3.4, 5, 25, 7, 8, 14, -3, 44]}
-    VisualisationData.create_scatter_plot(y_data)
+    VisualisationData.create_scatter_plot(y_data, file_name="0145-gs45")
 
     full_data_set = [
         {"distance": [4, 12, 3, -3.4, 5, 25, 7, 8, 14, -3, 44]},
         {"magnetization": [8, 5, 3, -3.4, 5, 25, 7, 8, 4, 0, -4]},
         {"wall_thickness": [5, 5, 3, -3.4, -5, 4, 7, 8, 4, 0, -4]}
     ]
-    VisualisationData.create_scatterplot_with_different_data_src(full_data_set)
+    VisualisationData.create_scatterplot_with_different_data_src(full_data_set, file_name="0145-gs45")
+
+    pie_set = [15, 12, 4, 6, 0, 18]
+    pie_label = ["Europa", "Afrika", "Asien", "Südamerika", "Nordamerika", "Australien"]
+
+    VisualisationData.create_pie_chart(pie_set, pie_label, pie_title="Regionen")

@@ -1,11 +1,14 @@
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
+import certifi
 
-uri = ""
+uri = "TODO"
+ca = certifi.where()
+default_client = MongoClient(uri, server_api=ServerApi('1'), tlsCAFile=ca)
 
 
 def send_data_to_mongo(processed_datasets):
-    client = MongoClient(uri, server_api=ServerApi('1'))
+    client = default_client
     database = client['Big-D']
     collection = database['raw_measurements_v2']
     try:
@@ -19,7 +22,7 @@ def send_data_to_mongo(processed_datasets):
 
 
 def read_data_from_mongo(query=None):
-    client = MongoClient(uri, server_api=ServerApi('1'))
+    client = default_client
     database = client['Big-D']
     collection = database['raw_measurements']
     query_result = []
@@ -38,7 +41,7 @@ def read_data_from_mongo(query=None):
 
 
 def count_data_from_mongo(query=None):
-    client = MongoClient(uri, server_api=ServerApi('1'))
+    client = default_client
     database = client['Big-D']
     collection = database['raw_measurements']
     if query is None:
@@ -50,5 +53,9 @@ def count_data_from_mongo(query=None):
     except Exception as e:
         print(f'Fehler beim lesen der Daten: {e}')
         return None
-    finally:
-        client.close()
+
+
+def close_mongo_client():
+    client = default_client
+    client.close()
+    print("MongoDB-Client wurde geschlossen.")

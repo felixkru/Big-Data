@@ -65,13 +65,11 @@ class HDF5Analyzer:
 
                         for item in sub_group_data_set:
                             if 'defect_channel' in item:
-                                checked_value = CheckData.check_array_length(item['defect_channel'])
                                 checked_value = CheckData.parse_type_to_float(checked_value)
                                 single_dataset["defect_channel"] = list(checked_value)
 
                             if 'wall_thickness' in item or 'WALL_THICKNESS' in item:
                                 if 'wall_thickness' in item:
-                                    checked_value = CheckData.check_array_length(item['wall_thickness'])
                                     checked_value = CheckData.parse_type_to_float(checked_value)
                                     if len(checked_value) != 1000:
                                         checked_value = CheckData.handle_ascii_string(item['wall_thickness'])
@@ -80,7 +78,6 @@ class HDF5Analyzer:
                                             CheckData.handle_easter_egg(item['wall_thickness'], file_name)
 
                                 if 'WALL_THICKNESS5' in item:
-                                    checked_value = CheckData.check_array_length(item['WALL_THICKNESS'])
                                     checked_value = CheckData.parse_type_to_float(checked_value)
                                     if len(checked_value) != 1000:
                                         checked_value = CheckData.handle_ascii_string(item['WALL_THICKNESS'])
@@ -91,7 +88,6 @@ class HDF5Analyzer:
                                 single_dataset["wall_thickness"] = list(checked_value)
 
                             if 'magnetization' in item:
-                                checked_value = CheckData.check_array_length(item['magnetization'])
                                 checked_value = CheckData.parse_type_to_float(checked_value)
 
                                 if len(checked_value) != 1000:

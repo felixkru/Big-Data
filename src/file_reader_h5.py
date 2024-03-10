@@ -90,8 +90,7 @@ class HDF5Analyzer:
 
                                 single_dataset["wall_thickness"] = list(checked_value)
 
-
-                            if 'magnetization5' in item:
+                            if 'magnetization' in item:
                                 checked_value = CheckData.check_array_length(item['magnetization'])
                                 checked_value = CheckData.parse_type_to_float(checked_value)
 
@@ -103,24 +102,18 @@ class HDF5Analyzer:
 
                                 single_dataset["magnetization"] = list(checked_value)
 
-                            if 'distance5' in item or 'distance_5' in item or 'DISTANCE5' in item:
+                            if 'distance' in item or 'distance_' in item or 'DISTANCE' in item:
                                 if 'distance' in item:
-                                    checked_value = CheckData.check_array_length(item['distance'])
                                     checked_value = CheckData.parse_type_to_float(checked_value)
-
                                     if len(checked_value) != 1000:
                                         checked_value = CheckData.handle_ascii_string(item['distance'])
 
                                 elif 'distance_' in item:
-                                    checked_value = CheckData.check_array_length(item['distance_'])
                                     checked_value = CheckData.parse_type_to_float(checked_value)
 
                                 elif 'DISTANCE' in item:
-                                    checked_value = CheckData.check_array_length(item['DISTANCE'])
                                     checked_value = CheckData.parse_type_to_float(checked_value)
 
-                                distance = {'distance': checked_value}
-                                data_preparation_and_conversion.append(distance)
                                 single_dataset["distance"] = list(checked_value)
 
                             if 'timestamp5' in item or 'TIMESTAMP5' in item:

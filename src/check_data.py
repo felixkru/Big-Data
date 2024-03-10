@@ -81,9 +81,6 @@ class CheckData:
             timestamps = data_set['timestamp']
             distances = data_set['distance']
 
-            print(timestamps)
-            print()
-
             if len(timestamps) == 1000 and len(distances) == 1000:
                 if len(velocity) == 1000:
                     pass

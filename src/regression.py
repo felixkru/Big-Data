@@ -6,26 +6,38 @@ from sklearn.linear_model import LinearRegression
 
 
 def main():
+    counter = 0
     query_content = mongoConnection.read_data_from_mongo({
         "region": {"$in": ["Europe"]},
-        "instrument": {"$in": ["Dolphin"]},
-        "file_name": "1ad1bda2-c595-45f7-9eb9-0c440d489b76"
+        "instrument": {"$in": ["Dolphin"]}
     }, "european_dolphins")
+    for element in query_content:
+        try:
+            x = np.array(element["timestamp"])
+            y = np.array(element["magnetization"])
 
-    x = np.array(query_content[0]["timestamp"])
-    y = np.array(query_content[0]["magnetization"])
+            matplotlib.pyplot.scatter(x, y)
+            matplotlib.pyplot.savefig(f"../plots/time_over_mag_{counter}.png")
+            # matplotlib.pyplot.show()
+            matplotlib.pyplot.close()
 
-    matplotlib.pyplot.scatter(x, y)
-    matplotlib.pyplot.show()
+            model = LinearRegression()
+            model.fit(x.reshape(-1, 1), y)
 
-    model = LinearRegression()
-    model.fit(x.reshape(-1, 1), y)
+            residuale = y - model.predict(x.reshape(-1, 1)) + np.mean(y[:100])
 
-    residuale = y - model.predict(x.reshape(-1, 1))
-
-    matplotlib.pyplot.scatter(x, residuale)
-    matplotlib.pyplot.show()
-    # mongoConnection.send_data_to_mongo(query_content, "european_dolphins")
+            matplotlib.pyplot.scatter(x, residuale)
+            matplotlib.pyplot.savefig(f"../plots/time_over_mag_regression_{counter}.png")
+            # matplotlib.pyplot.show()
+            matplotlib.pyplot.close()
+            # mongoConnection.send_data_to_mongo(query_content, "european_dolphins")
+            counter += 1
+        except Exception as e:
+            print(f"Error: {e} ")
+            counter += 1
+            x = []
+            y = []
+            continue
 
 
 main()

@@ -4,10 +4,10 @@ from pymongo.server_api import ServerApi
 uri = ""
 
 
-def send_data_to_mongo(processed_datasets):
+def send_data_to_mongo(processed_datasets, collection):
     client = MongoClient(uri, server_api=ServerApi('1'))
     database = client['Big-D']
-    collection = database['raw_measurements_v2']
+    collection = database[collection]
     try:
         collection.insert_many(processed_datasets)
 
@@ -18,10 +18,10 @@ def send_data_to_mongo(processed_datasets):
         client.close()
 
 
-def read_data_from_mongo(query=None):
+def read_data_from_mongo(query=None, collection="raw_measurements"):
     client = MongoClient(uri, server_api=ServerApi('1'))
     database = client['Big-D']
-    collection = database['raw_measurements']
+    collection = database[collection]
     query_result = []
     if query is None:
         query = {}
@@ -37,10 +37,10 @@ def read_data_from_mongo(query=None):
         client.close()
 
 
-def count_data_from_mongo(query=None):
+def count_data_from_mongo(query=None, collection="raw_measurements"):
     client = MongoClient(uri, server_api=ServerApi('1'))
     database = client['Big-D']
-    collection = database['raw_measurements']
+    collection = database[collection]
     if query is None:
         query = {}
     try:

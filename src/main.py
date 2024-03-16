@@ -20,7 +20,7 @@ if __name__ == "__main__":
 query_content = mongoConnection.count_data_from_mongo({
     "region": {"$in": ["Europe"]},
     "instrument": {"$in": ["Elephant"]}
-})
+}, "raw_measurements_v2")
 print(query_content)
 """
 for data in query_content:

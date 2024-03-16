@@ -24,12 +24,12 @@ if __name__ == "__main__":
     #print(query_content)
 
     """So kann man z.B. die namen der datensätze ermitteln bei denen dein query zu trifft."""
-    #query_content = mongoConnection.count_data_from_mongo({
+    query_content = mongoConnection.count_data_from_mongo({
     "region": {"$in": ["Europe"]},
     "instrument": {"$in": ["Elephant"]}
-})
-print(query_content)
-"""
-    #for data in query_content:
-        #print(data['file_name'])
-"""
+    })
+    print(query_content)
+    """
+        #for data in query_content:
+            #print(data['file_name'])
+    """

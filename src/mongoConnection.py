@@ -52,3 +52,21 @@ def count_data_from_mongo(query=None, collection="raw_measurements"):
         return None
     finally:
         client.close()
+
+
+def update_data_from_mongo(file=None, input_data=None, collection="raw_measurements"):
+    client = MongoClient(uri, server_api=ServerApi('1'))
+    database = client['Big-D']
+    collection = database[collection]
+    db_filter = file
+    update = input_data
+    if file or input_data is None:
+        pass
+    try:
+        collection.update_one(db_filter, update)
+        print(f"Datei erfolgreich geupdated: {file}")
+    except Exception as e:
+        print(f'Fehler beim updaten der Datei: {e}')
+        return None
+    finally:
+        client.close()

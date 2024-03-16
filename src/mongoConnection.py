@@ -1,3 +1,4 @@
+import pymongo
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 
@@ -67,6 +68,20 @@ def update_data_from_mongo(file=None, input_data=None, collection="raw_measureme
         print(f"Datei erfolgreich geupdated: {file}")
     except Exception as e:
         print(f'Fehler beim updaten der Datei: {e}')
+        return None
+    finally:
+        client.close()
+
+
+def bulk_update_mongo(updates, collection="raw_measurements"):
+    client = MongoClient(uri, server_api=ServerApi('1'))
+    database = client['Big-D']
+    collection = database[collection]
+    try:
+        collection.bulk_write(updates)
+        print("Dateien erfolgreich geupdated")
+    except Exception as e:
+        print(f'Fehler beim updaten der Dateien: {e}')
         return None
     finally:
         client.close()

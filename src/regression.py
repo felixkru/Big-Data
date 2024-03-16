@@ -4,10 +4,13 @@ import mongoConnection
 import numpy as np
 from sklearn.linear_model import LinearRegression
 import mongoConnection
+import pymongo
 
 
 def main():
     counter = 0
+    updates = []
+    bulk_operations = []
     query_content = mongoConnection.read_data_from_mongo({
         "region": {"$in": ["Europe"]},
         "instrument": {"$in": ["Dolphin"]}
@@ -36,7 +39,7 @@ def main():
             db_filter = {"file_name": element["file_name"]}
             update = {"$set": {"magnetization_straightened": residuale}}
 
-            mongoConnection.update_data_from_mongo(db_filter, update, "european_dolphins")
+            updates.append((db_filter, update))
             counter += 1
         except Exception as e:
             print(f"Error: {e} ")
@@ -44,6 +47,11 @@ def main():
             x = []
             y = []
             continue
+    for db_filter, update in updates:
+        operation = pymongo.UpdateOne(db_filter, update)
+        bulk_operations.append(operation)
+
+    mongoConnection.bulk_update_mongo(bulk_operations, "european_dolphins")
 
 
 main()

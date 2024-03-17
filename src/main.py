@@ -5,7 +5,7 @@ from calculate_location_parameters import CalculateLocationParameters
 
 
 def handle_file_reader_and_write_to_database():
-    path = "../test"
+    path = "../dataset"
     collection = "full_dataset"
     analyzer = file_reader_h5.HDF5Analyzer(path)
     dataset = analyzer.handle_file_reader()

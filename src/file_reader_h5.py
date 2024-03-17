@@ -144,9 +144,6 @@ class HDF5Analyzer:
                                     checked_value = CheckData.parse_type_to_float(item['timestamp_'])
                                     if len(checked_value) != 1000:
                                         checked_value = CheckData.convert_datetime_to_float(item['timestamp_'])
-
-
-                                #CheckData.convert_float_to_date(checked_value)
                                 single_dataset["timestamp"] = list(checked_value)
 
                             if 'velocity' in item or 'VELOCITY' in item or 'velocity_' in item:
@@ -168,23 +165,6 @@ class HDF5Analyzer:
     def handle_file_reader(self):
         folder_paths = self.open_file_and_create_path()
         return self.open_h5_files_and_return_file_data(folder_paths)
-
-    @staticmethod
-    def handle_and_set_correct_attributes_for_velocity_calculation(data):
-        response = [0, 0, 0]
-
-        for data_set in data:
-
-            if 'distance' in data_set:
-                response[0] = {'distance': data_set['distance']}
-
-            if 'velocity' in data_set:
-                response[1] = {'velocity': data_set['velocity']}
-
-            if 'timestamp' in data_set:
-                response[2] = {'timestamp': data_set['timestamp']}
-
-        return response
 
     @staticmethod
     def create_file_name(file_path):

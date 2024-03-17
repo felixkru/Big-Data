@@ -18,7 +18,7 @@ class CheckData:
                 new_stamp = datetime.strptime(utf_stamp, "%Y-%m-%dT%H:%M:%S")
                 new_timestamps.append(new_stamp.timestamp())
 
-                return new_timestamps
+            return new_timestamps
 
         except Exception as error:
             print("Can't convert to Date:")
@@ -78,8 +78,8 @@ class CheckData:
             timestamps = data_set['timestamp']
             distances = data_set['distance']
             data_set['calculated_velocity'] = []
-
             if len(timestamps) == 1000 and len(distances) == 1000:
+
                 if len(velocity) == 1000:
                     pass
                 else:
@@ -89,7 +89,7 @@ class CheckData:
                             data_set['calculated_velocity'] = new_velocity
 
                     except Exception as e:
-                        print(e)
+                        pass
             else:
                 print("Zu wenig Daten zur Berechnung der Velocity. Grund falscher Timestamp.")
                 print(filename)
@@ -101,15 +101,19 @@ class CheckData:
     @staticmethod
     def calculate_velocity(timestamp, distance, velocity):
         complete_velocity = []
+        try:
+            for index, time in enumerate(timestamp):
+                if index < len(velocity):
+                    complete_velocity.append(velocity[index])
 
-        for index, time in enumerate(timestamp):
-            if index < len(velocity):
-                complete_velocity.append(velocity[index])
+                else:
+                    time_difference = timestamp[index] - timestamp[index - 1]
+                    distance_difference = (distance[index] - distance[index - 1])
+                    velocity_new = distance_difference / time_difference * 1000
+                    complete_velocity.append(velocity_new)
 
-            else:
-                time_difference = timestamp - timestamp[index - 1]
-                distance_difference = (distance - distance[index - 1])
-                velocity = distance_difference / time_difference * 1000
-                complete_velocity.append(velocity[index])
+            return complete_velocity
+        except ValueError as e:
+            print("Velocity konnte nicht berechnet werden!", e)
+            return velocity
 
-        return complete_velocity

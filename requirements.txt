@@ -4,4 +4,4 @@ matplotlib>=3.8.2
 pymongo~=4.6.2
 datetime>=5.4
 sklearn>=0.0.post12
-
+certifi~=2024.2.2

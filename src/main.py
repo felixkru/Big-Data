@@ -16,6 +16,7 @@ if __name__ == "__main__":
     # visualization_handler.handle_scatter_chart_with_one_argument(dataset[0])
     visualization_handler.handle_pie_chart_regions()
     dataset = analyzer.handle_file_reader()
+    dataset_with_full_distance = analyzer.handle_set_full_distance(dataset)
     dataset_with_velocity = check_data.CheckData.calculate_velocity_from_time_and_distance(dataset)
     # full_dataset = CalculateLocationParameters.handle_update_average_and_median_calculation(dataset)
 """
@@ -36,13 +37,16 @@ if __name__ == "__main__":
 
     So kann man z.B. die namen der datensätze ermitteln bei denen dein query zu trifft."""
 """
+
+So kann man z.B. die namen der datensätze ermitteln bei denen dein query zu trifft.
+
 query_content = mongoConnection.count_data_from_mongo({
    "region": {"$in": ["Europe"]},
 "instrument": {"$in": ["Elephant"]}
 })
 print(query_content)
-"""
-"""
-    for data in query_content:
-        print(data['file_name'])
-"""
+
+
+for data in query_content:
+    print(data['file_name'])
+    """

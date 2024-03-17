@@ -131,14 +131,22 @@ class HDF5Analyzer:
 
                             if 'timestamp' in item or 'TIMESTAMP' in item or 'timestamp_' in item:
                                 if 'timestamp' in item:
-                                    checked_value = CheckData.check_array_length(item['timestamp'])
-                                if 'TIMESTAMP' in item:
-                                    checked_value = CheckData.check_array_length(item['TIMESTAMP'])
-                                if 'timestamp_' in item:
-                                    checked_value = CheckData.check_array_length(item['timestamp_'])
+                                    checked_value = CheckData.parse_type_to_float(item['timestamp'])
+                                    if len(checked_value) != 1000:
+                                        checked_value = CheckData.convert_datetime_to_float(item['timestamp'])
 
-                                checked_value = CheckData.parse_type_to_float(checked_value)
-                                CheckData.convert_float_to_date(checked_value)
+                                if 'TIMESTAMP' in item:
+                                    checked_value = CheckData.parse_type_to_float(item['TIMESTAMP'])
+                                    if len(checked_value) != 1000:
+                                        checked_value = CheckData.convert_datetime_to_float(item['TIMESTAMP'])
+
+                                if 'timestamp_' in item:
+                                    checked_value = CheckData.parse_type_to_float(item['timestamp_'])
+                                    if len(checked_value) != 1000:
+                                        checked_value = CheckData.convert_datetime_to_float(item['timestamp_'])
+
+
+                                #CheckData.convert_float_to_date(checked_value)
                                 single_dataset["timestamp"] = list(checked_value)
 
                             if 'velocity' in item or 'VELOCITY' in item or 'velocity_' in item:

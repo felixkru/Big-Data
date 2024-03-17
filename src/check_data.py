@@ -80,6 +80,7 @@ class CheckData:
             filename = data_set['file_name']
             timestamps = data_set['timestamp']
             distances = data_set['distance']
+            data_set['calculated_velocity'] = []
 
             if len(timestamps) == 1000 and len(distances) == 1000:
                 if len(velocity) == 1000:
@@ -95,7 +96,6 @@ class CheckData:
             else:
                 print("Zu wenig Daten zur Berechnung der Velocity. Grund falscher Timestamp.")
                 print(filename)
-                data_set['calculated_velocity'] = []
 
             complete_set.append(data_set)
 

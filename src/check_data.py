@@ -88,12 +88,14 @@ class CheckData:
                     try:
                         new_velocity = CheckData.calculate_velocity(timestamps, distances, velocity)
                         if len(new_velocity) == 1000:
-                            data_set['velocity'] = new_velocity
+                            data_set['calculated_velocity'] = new_velocity
 
                     except Exception as e:
                         print(e)
             else:
+                print("Zu wenig Daten zur Berechnung der Velocity. Grund falscher Timestamp.")
                 print(filename)
+                data_set['calculated_velocity'] = []
 
             complete_set.append(data_set)
 

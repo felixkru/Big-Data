@@ -12,6 +12,7 @@ def handle_file_reader_and_write_to_database():
     dataset_with_statistic_parameters = CalculateLocationParameters.handle_update_average_and_median_calculation(
         dataset_with_velocity)
     test = dataset_with_statistic_parameters
+    print(len(test))
     print("Test")
     #mongoConnection.send_data_to_mongo(dataset_with_statistic_parameters)
 

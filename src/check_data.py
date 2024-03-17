@@ -67,13 +67,22 @@ class CheckData:
     @staticmethod
     def handle_easter_egg(array, filename):
         new_array = []
-        for data_set in array:
+        for index, data_set in enumerate(array):
             try:
                 byte_string = data_set.decode('utf-8')
                 float_number = float(byte_string)
                 new_array.append(float_number)
             except ValueError:
-                new_array.append(0)
+                if index > 0:
+                    byte_string_prev = array[index - 1].decode('utf-8')
+                    float_number_prev = float(byte_string_prev)
+                    new_array.append(float_number_prev)
+                elif index < len(array) - 1:
+                    byte_string_next = array[index + 1].decode('utf-8')
+                    float_number_next = float(byte_string_next)
+                    new_array.append(float_number_next)
+                else:
+                    new_array.append(0)
         return new_array
 
     @staticmethod

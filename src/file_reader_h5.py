@@ -132,7 +132,6 @@ class HDF5Analyzer:
                             if 'timestamp' in item or 'TIMESTAMP' in item or 'timestamp_' in item:
                                 if 'timestamp' in item:
                                     checked_value = CheckData.parse_type_to_float(item['timestamp'])
-                                    print(len(checked_value))
                                     if len(checked_value) != 1000:
                                         checked_value = CheckData.convert_datetime_to_float(item['timestamp'], file_name)
 

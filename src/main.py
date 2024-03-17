@@ -5,8 +5,8 @@ from calculate_location_parameters import CalculateLocationParameters
 
 
 def handle_file_reader_and_write_to_database():
-    path = "../dataset"
-    collection = "full_dataset"
+    path = "../test"
+    collection = "complete_dataset"
     analyzer = file_reader_h5.HDF5Analyzer(path)
     dataset = analyzer.handle_file_reader()
 
@@ -16,8 +16,6 @@ def handle_file_reader_and_write_to_database():
     # Bei der Berechnung der statistischen Werte gibt es noch Probleme durch die falschen Timstamps
     dataset_with_statistic_parameters = CalculateLocationParameters.handle_update_average_and_median_calculation(dataset_with_velocity)
     full_dataset = analyzer.handle_set_full_distance(dataset_with_statistic_parameters)
-
-    tes = full_dataset
 
     #mongoConnection.send_data_to_mongo(full_dataset, collection)
 

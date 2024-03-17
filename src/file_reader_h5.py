@@ -196,6 +196,24 @@ class HDF5Analyzer:
 
         return region_attribute, instrument_attribute
 
+    @staticmethod
+    def set_full_distance_for_each_set(distance_dataset, filename):
+        try:
+            full_distance = distance_dataset['distance'][-1]
+            distance_dataset['full_distance'] = full_distance
+
+            return distance_dataset
+        except ValueError as e:
+            print("Es konnte keine maximale Distanz ermittelt werden: ", filename)
+            return distance_dataset
+
+    @staticmethod
+    def handle_set_full_distance(datasets):
+        new_set = []
+        for data_set in datasets:
+            new_set.append(HDF5Analyzer.set_full_distance_for_each_set(data_set, data_set['file_name']))
+        return new_set
+
 
 if __name__ == "__main__":
     path = "../test"

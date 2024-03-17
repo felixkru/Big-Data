@@ -3,48 +3,27 @@ import numpy as np
 
 class OutlierHandler:
 
-    def __init__(self, file):
-        self.file = file
-        self.file_2 = file
-
-    def zscore_detection(self):
+    @staticmethod
+    def tukeys_detection(data_array):
 
         try:
 
-            mean = np.mean(self.file)
-            std = np.std(self.file)
-            if std == 0:
-                return None
-            z_scores = (self.file - mean) / std
-            inliners = np.where(np.abs(z_scores) <= 3)
-            filtered_data = self.file[inliners]
-
-            return filtered_data
-
-        except ZeroDivisionError:
-            print("Zero division is forbidden.")
-
-        except Exception as e:
-            print("Error:", str(e))
-
-    def tukeys_detection(self):
-
-        try:
-
-            q1 = np.percentile(self.file_2, 25)
-            q3 = np.percentile(self.file_2, 75)
+            q1 = np.percentile(data_array, 25)
+            q3 = np.percentile(data_array, 75)
             iqr = q3 - q1
+            mean = np.mean(data_array)
 
             lower_bound = q1 - 1.5 * iqr
             upper_bound = q3 + 1.5 * iqr
 
-            inliners = np.where((self.file_2 >= lower_bound) & (self.file_2 <= upper_bound))
-            filtered_data = self.file_2[inliners]
-
-            return filtered_data
-
-        except ZeroDivisionError:
-            print("Zero division is forbidden.")
+            data_neu = [mean
+                        if
+                        lower_bound > data_point or data_point > upper_bound
+                        else
+                        data_point
+                        for
+                        data_point in data_array]
+            return data_neu
 
         except Exception as e:
             print("Error:", str(e))

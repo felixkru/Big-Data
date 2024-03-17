@@ -1,3 +1,4 @@
+import pymongo
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 import certifi
@@ -7,10 +8,10 @@ ca = certifi.where()
 default_client = MongoClient(uri, server_api=ServerApi('1'), tlsCAFile=ca)
 
 
-def send_data_to_mongo(processed_datasets):
+def send_data_to_mongo(processed_datasets, collection):
     client = default_client
     database = client['Big-D']
-    collection = database['raw_measurements_v2']
+    collection = database[collection]
     try:
         collection.insert_many(processed_datasets)
 
@@ -21,10 +22,10 @@ def send_data_to_mongo(processed_datasets):
         client.close()
 
 
-def read_data_from_mongo(query=None):
+def read_data_from_mongo(query=None, collection="raw_measurements"):
     client = default_client
     database = client['Big-D']
-    collection = database['raw_measurements']
+    collection = database[collection]
     query_result = []
     if query is None:
         query = {}
@@ -40,10 +41,10 @@ def read_data_from_mongo(query=None):
         client.close()
 
 
-def count_data_from_mongo(query=None):
+def count_data_from_mongo(query=None, collection="raw_measurements"):
     client = default_client
     database = client['Big-D']
-    collection = database['raw_measurements_v2']
+    collection = database[collection]
     if query is None:
         query = {}
     try:
@@ -59,3 +60,35 @@ def close_mongo_client():
     client = default_client
     client.close()
     print("MongoDB-Client wurde geschlossen.")
+
+
+def update_data_from_mongo(file=None, input_data=None, collection="raw_measurements"):
+    client = default_client
+    database = client['Big-D']
+    collection = database[collection]
+    db_filter = file
+    update = input_data
+    if file or input_data is None:
+        pass
+    try:
+        collection.update_one(db_filter, update)
+        print(f"Datei erfolgreich geupdated: {file}")
+    except Exception as e:
+        print(f'Fehler beim updaten der Datei: {e}')
+        return None
+    finally:
+        client.close()
+
+
+def bulk_update_mongo(updates, collection="raw_measurements"):
+    client = default_client
+    database = client['Big-D']
+    collection = database[collection]
+    try:
+        collection.bulk_write(updates)
+        print("Dateien erfolgreich geupdated")
+    except Exception as e:
+        print(f'Fehler beim updaten der Dateien: {e}')
+        return None
+    finally:
+        client.close()

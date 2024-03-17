@@ -27,7 +27,7 @@ class CheckData:
         if len(array) == 1000:
             return array
         else:
-            return np.array([])
+            return []
 
     @staticmethod
     def handle_ascii_string(array):
@@ -38,7 +38,7 @@ class CheckData:
                 new_array.append(float_number)
             return new_array
         except ValueError as e:
-            return np.array([])
+            return []
 
     @staticmethod
     def handel_byte_string(array):
@@ -50,7 +50,7 @@ class CheckData:
                 new_array.append(float_number)
             return new_array
         except ValueError as e:
-            return np.array([])
+            return []
 
     @staticmethod
     def handle_easter_egg(array, filename):
@@ -75,6 +75,7 @@ class CheckData:
     @staticmethod
     def calculate_velocity_from_time_and_distance(data_sets):
         complete_set = []
+
         for data_set in data_sets:
             velocity = data_set['velocity']
             filename = data_set['file_name']
@@ -113,6 +114,6 @@ class CheckData:
                 time_difference = timestamp - timestamp[index - 1]
                 distance_difference = (distance - distance[index - 1])
                 velocity = distance_difference / time_difference * 1000
-                complete_velocity.append(velocity)
+                complete_velocity.append(velocity[index])
 
         return complete_velocity

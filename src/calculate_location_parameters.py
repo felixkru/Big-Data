@@ -20,7 +20,6 @@ class CalculateLocationParameters:
     def handle_update_average_and_median_calculation(data_set):
 
         for data_array in data_set:
-
             try:
                 if len(data_array['calculated_velocity']) > 0:
                     data_array["velocity_median"] = CalculateLocationParameters.calculate_median(data_array['calculated_velocity'])

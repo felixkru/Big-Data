@@ -8,12 +8,11 @@ class CheckData:
         pass
 
     @staticmethod
-    def convert_datetime_to_float(timestamps):
+    def convert_datetime_to_float(timestamps, filename):
         new_timestamps = []
 
         try:
             for timestamp in timestamps:
-
                 utf_stamp = timestamp.decode("utf-8")
                 new_stamp = datetime.strptime(utf_stamp, "%Y-%m-%dT%H:%M:%S")
                 new_timestamps.append(new_stamp.timestamp())
@@ -21,9 +20,26 @@ class CheckData:
             return new_timestamps
 
         except Exception as error:
-            print("Can't convert to Date:")
-            print("Error:", error)
-            return timestamps
+            new_stamps = CheckData.convert_to_unix_datetime(timestamps, filename)
+            if len(new_stamps) > 0:
+                return new_stamps
+            else:
+                print("Can't convert to Date:", filename)
+                print("Error:", error)
+                return timestamps
+
+    @staticmethod
+    def convert_to_unix_datetime(timestamps, filename):
+        new_timestamps = []
+
+        try:
+            for timestamp in timestamps:
+                new_stamp = float(timestamp)
+                new_timestamps.append(new_stamp)
+            return new_timestamps
+        except ValueError as error:
+            print("Can't create Timestamp", filename)
+            return []
 
     @staticmethod
     def handle_ascii_string(array):

@@ -27,7 +27,42 @@ class CheckData:
         if len(array) == 1000:
             return array
         else:
-            return []
+            return np.array([])
+
+    @staticmethod
+    def handle_ascii_string(array):
+        new_array = []
+        try:
+            for data_set in array:
+                float_number = float(data_set)
+                new_array.append(float_number)
+            return new_array
+        except ValueError as e:
+            return np.array([])
+
+    @staticmethod
+    def handel_byte_string(array):
+        new_array = []
+        try:
+            for data_set in array:
+                byte_string = data_set.decode('utf-8')
+                float_number = float(byte_string)
+                new_array.append(float_number)
+            return new_array
+        except ValueError as e:
+            return np.array([])
+
+    @staticmethod
+    def handle_easter_egg(array, filename):
+        new_array = []
+        for data_set in array:
+            try:
+                byte_string = data_set.decode('utf-8')
+                float_number = float(byte_string)
+                new_array.append(float_number)
+            except ValueError:
+                new_array.append(0)
+        return new_array
 
     @staticmethod
     def parse_type_to_float(data):
@@ -38,22 +73,44 @@ class CheckData:
             return []
 
     @staticmethod
-    def calculate_velocity_from_time_and_distance(distances, velocities, timestamps):
-        if len(timestamps['timestamp']) == 1000 and len(distances['distance']) == 1000:
-            complete_velocity = []
+    def calculate_velocity_from_time_and_distance(data_sets):
+        complete_set = []
+        for data_set in data_sets:
+            velocity = data_set['velocity']
+            filename = data_set['file_name']
+            timestamps = data_set['timestamp']
+            distances = data_set['distance']
 
-            for index, timestamp in enumerate(timestamps['timestamp']):
-                distance = distances['distance'][index]
-                timestamp = timestamps['timestamp'][index]
-
-                if index < len(velocities['velocity']):
-                    velocity = velocities['velocity'][index]
-                    complete_velocity.append(velocity)
-
+            if len(timestamps) == 1000 and len(distances) == 1000:
+                if len(velocity) == 1000:
+                    pass
                 else:
-                    time_difference = timestamp - timestamps['timestamp'][index - 1]
-                    distance_difference = (distance - distances['distance'][index - 1])
-                    velocity = distance_difference / time_difference * 1000
-                    complete_velocity.append(velocity)
+                    try:
+                        new_velocity = CheckData.calculate_velocity(timestamps, distances, velocity)
+                        if len(new_velocity) == 1000:
+                            data_set['velocity'] = new_velocity
 
-            return complete_velocity
+                    except Exception as e:
+                        print(e)
+            else:
+                print(filename)
+
+            complete_set.append(data_set)
+
+        return complete_set
+
+    @staticmethod
+    def calculate_velocity(timestamp, distance, velocity):
+        complete_velocity = []
+
+        for index, time in enumerate(timestamp):
+            if index < len(velocity):
+                complete_velocity.append(velocity[index])
+
+            else:
+                time_difference = timestamp - timestamp[index - 1]
+                distance_difference = (distance - distance[index - 1])
+                velocity = distance_difference / time_difference * 1000
+                complete_velocity.append(velocity)
+
+        return complete_velocity

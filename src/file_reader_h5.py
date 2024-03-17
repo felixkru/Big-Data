@@ -131,14 +131,19 @@ class HDF5Analyzer:
 
                             if 'timestamp' in item or 'TIMESTAMP' in item or 'timestamp_' in item:
                                 if 'timestamp' in item:
-                                    checked_value = CheckData.check_array_length(item['timestamp'])
-                                if 'TIMESTAMP' in item:
-                                    checked_value = CheckData.check_array_length(item['TIMESTAMP'])
-                                if 'timestamp_' in item:
-                                    checked_value = CheckData.check_array_length(item['timestamp_'])
+                                    checked_value = CheckData.parse_type_to_float(item['timestamp'])
+                                    if len(checked_value) != 1000:
+                                        checked_value = CheckData.convert_datetime_to_float(item['timestamp'], file_name)
 
-                                checked_value = CheckData.parse_type_to_float(checked_value)
-                                CheckData.convert_float_to_date(checked_value)
+                                if 'TIMESTAMP' in item:
+                                    checked_value = CheckData.parse_type_to_float(item['TIMESTAMP'])
+                                    if len(checked_value) != 1000:
+                                        checked_value = CheckData.convert_datetime_to_float(item['TIMESTAMP'], file_name)
+
+                                if 'timestamp_' in item:
+                                    checked_value = CheckData.parse_type_to_float(item['timestamp_'])
+                                    if len(checked_value) != 1000:
+                                        checked_value = CheckData.convert_datetime_to_float(item['timestamp_'], file_name)
                                 single_dataset["timestamp"] = list(checked_value)
 
                             if 'velocity' in item or 'VELOCITY' in item or 'velocity_' in item:
@@ -160,23 +165,6 @@ class HDF5Analyzer:
     def handle_file_reader(self):
         folder_paths = self.open_file_and_create_path()
         return self.open_h5_files_and_return_file_data(folder_paths)
-
-    @staticmethod
-    def handle_and_set_correct_attributes_for_velocity_calculation(data):
-        response = [0, 0, 0]
-
-        for data_set in data:
-
-            if 'distance' in data_set:
-                response[0] = {'distance': data_set['distance']}
-
-            if 'velocity' in data_set:
-                response[1] = {'velocity': data_set['velocity']}
-
-            if 'timestamp' in data_set:
-                response[2] = {'timestamp': data_set['timestamp']}
-
-        return response
 
     @staticmethod
     def create_file_name(file_path):

@@ -21,6 +21,7 @@ lib/
 lib64/
 parts/
 sdist/
+test/
 var/
 wheels/
 share/python-wheels/
@@ -123,7 +124,7 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-.env
+src/.env
 .venv
 env/
 venv/

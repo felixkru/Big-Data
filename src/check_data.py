@@ -27,7 +27,7 @@ class CheckData:
         if len(array) == 1000:
             return array
         else:
-            return np.array([])
+            return []
 
     @staticmethod
     def handle_ascii_string(array):
@@ -38,7 +38,7 @@ class CheckData:
                 new_array.append(float_number)
             return new_array
         except ValueError as e:
-            return np.array([])
+            return []
 
     @staticmethod
     def handel_byte_string(array):
@@ -50,7 +50,7 @@ class CheckData:
                 new_array.append(float_number)
             return new_array
         except ValueError as e:
-            return np.array([])
+            return []
 
     @staticmethod
     def handle_easter_egg(array, filename):
@@ -75,11 +75,13 @@ class CheckData:
     @staticmethod
     def calculate_velocity_from_time_and_distance(data_sets):
         complete_set = []
+
         for data_set in data_sets:
             velocity = data_set['velocity']
             filename = data_set['file_name']
             timestamps = data_set['timestamp']
             distances = data_set['distance']
+            data_set['calculated_velocity'] = []
 
             if len(timestamps) == 1000 and len(distances) == 1000:
                 if len(velocity) == 1000:
@@ -88,11 +90,12 @@ class CheckData:
                     try:
                         new_velocity = CheckData.calculate_velocity(timestamps, distances, velocity)
                         if len(new_velocity) == 1000:
-                            data_set['velocity'] = new_velocity
+                            data_set['calculated_velocity'] = new_velocity
 
                     except Exception as e:
                         print(e)
             else:
+                print("Zu wenig Daten zur Berechnung der Velocity. Grund falscher Timestamp.")
                 print(filename)
 
             complete_set.append(data_set)
@@ -111,6 +114,6 @@ class CheckData:
                 time_difference = timestamp - timestamp[index - 1]
                 distance_difference = (distance - distance[index - 1])
                 velocity = distance_difference / time_difference * 1000
-                complete_velocity.append(velocity)
+                complete_velocity.append(velocity[index])
 
         return complete_velocity

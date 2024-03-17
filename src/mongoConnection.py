@@ -3,7 +3,7 @@ from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 import certifi
 
-uri = "TODO"
+uri = ""
 ca = certifi.where()
 default_client = MongoClient(uri, server_api=ServerApi('1'), tlsCAFile=ca)
 

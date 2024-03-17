@@ -1,27 +1,31 @@
 import file_reader_h5
 import check_data
-from src import visualization_handler
 import mongoConnection
 from calculate_location_parameters import CalculateLocationParameters
 
-if __name__ == "__main__":
-    # Initialisierungen
-    visualization_handler = visualization_handler.VisualizationHandler
-    path = "../test"
-    analyzer = file_reader_h5.HDF5Analyzer(path)
 
-    # Logik
-    # dataset = analyzer.handle_file_reader()
-    # visualization_handler.handle_scatter_chart_with_multiple_arguments(dataset[0])
-    # visualization_handler.handle_scatter_chart_with_one_argument(dataset[0])
-    visualization_handler.handle_pie_chart_regions()
+def handle_file_reader_and_write_to_database():
+    path = "../dataset"
+    collection = "full_dataset"
+    analyzer = file_reader_h5.HDF5Analyzer(path)
     dataset = analyzer.handle_file_reader()
-    dataset_with_full_distance = analyzer.handle_set_full_distance(dataset)
+
+    # Bei dem dataset_with_velocity gibt es noch Probleme durch die Umwandulng des Timestamps
     dataset_with_velocity = check_data.CheckData.calculate_velocity_from_time_and_distance(dataset)
-    # full_dataset = CalculateLocationParameters.handle_update_average_and_median_calculation(dataset)
-"""
-    mongoConnection.send_data_to_mongo(dataset)
-"""
+
+    # Bei der Berechnung der statistischen Werte gibt es noch Probleme durch die falschen Timstamps
+    dataset_with_statistic_parameters = CalculateLocationParameters.handle_update_average_and_median_calculation(dataset_with_velocity)
+    full_dataset = analyzer.handle_set_full_distance(dataset_with_statistic_parameters)
+
+    mongoConnection.send_data_to_mongo(full_dataset, collection)
+
+
+if __name__ == "__main__":
+    """
+    Die Funktion verarbeitet das komplette Datenset
+    """
+    handle_file_reader_and_write_to_database()
+
 """
     query_counter_result = mongoConnection.count_data_from_mongo({"region": "Africa"})
     print(f"Soviele Datensätze entsprechen deinem Query: {query_counter_result}")

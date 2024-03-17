@@ -71,25 +71,33 @@ class HDF5Analyzer:
                                     checked_value = CheckData.parse_type_to_float(item['wall_thickness'])
                                     if len(checked_value) != 1000:
                                         checked_value = CheckData.handle_ascii_string(item['wall_thickness'])
-                                        if not checked_value:
+
+                                        if len(checked_value) == 0:
                                             checked_value = CheckData.handel_byte_string(item['wall_thickness'])
-                                            CheckData.handle_easter_egg(item['wall_thickness'], file_name)
+
+                                            if len(checked_value) == 0:
+                                                checked_value = CheckData.handle_easter_egg(item['wall_thickness'], file_name)
 
                                 if 'WALL_THICKNESS' in item:
                                     checked_value = CheckData.parse_type_to_float(item['WALL_THICKNESS'])
                                     if len(checked_value) != 1000:
                                         checked_value = CheckData.handle_ascii_string(item['WALL_THICKNESS'])
-                                        if not checked_value:
+                                        if len(checked_value) == 0:
                                             checked_value = CheckData.handel_byte_string(item['WALL_THICKNESS'])
-                                            CheckData.handle_easter_egg(item['wall_thickness'], file_name)
+
+                                            if len(checked_value) == 0:
+                                                checked_value = CheckData.handle_easter_egg(item['WALL_THICKNESS'], file_name)
 
                                 if 'wall_thickness_' in item:
                                     checked_value = CheckData.parse_type_to_float(item['wall_thickness_'])
                                     if len(checked_value) != 1000:
                                         checked_value = CheckData.handle_ascii_string(item['wall_thickness_'])
-                                        if not checked_value:
+
+                                        if len(checked_value) == 0:
                                             checked_value = CheckData.handel_byte_string(item['wall_thickness_'])
-                                            CheckData.handle_easter_egg(item['wall_thickness'], file_name)
+
+                                            if len(checked_value) == 0:
+                                                checked_value = CheckData.handle_easter_egg(item['wall_thickness_'], file_name)
 
                                 single_dataset["wall_thickness"] = list(checked_value)
 
@@ -98,9 +106,12 @@ class HDF5Analyzer:
 
                                 if len(checked_value) != 1000:
                                     checked_value = CheckData.handle_ascii_string(item['magnetization'])
-                                    if not checked_value:
+
+                                    if len(checked_value) == 0:
                                         checked_value = CheckData.handel_byte_string(item['magnetization'])
-                                        CheckData.handle_easter_egg(item['magnetization'], file_name)
+
+                                        if len(checked_value) == 0:
+                                            checked_value = CheckData.handle_easter_egg(item['magnetization'], file_name)
 
                                 single_dataset["magnetization"] = list(checked_value)
 

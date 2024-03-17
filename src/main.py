@@ -1,14 +1,23 @@
 import file_reader_h5
 import check_data
+from src import visualization_handler
 import mongoConnection
 from calculate_location_parameters import CalculateLocationParameters
 
 if __name__ == "__main__":
+    # Initialisierungen
+    visualization_handler = visualization_handler.VisualizationHandler
     path = "../test"
     analyzer = file_reader_h5.HDF5Analyzer(path)
+
+    # Logik
+    # dataset = analyzer.handle_file_reader()
+    # visualization_handler.handle_scatter_chart_with_multiple_arguments(dataset[0])
+    # visualization_handler.handle_scatter_chart_with_one_argument(dataset[0])
+    visualization_handler.handle_pie_chart_regions()
     dataset = analyzer.handle_file_reader()
     dataset_with_velocity = check_data.CheckData.calculate_velocity_from_time_and_distance(dataset)
-    #full_dataset = CalculateLocationParameters.handle_update_average_and_median_calculation(dataset)
+    # full_dataset = CalculateLocationParameters.handle_update_average_and_median_calculation(dataset)
 """
     mongoConnection.send_data_to_mongo(dataset)
 """
@@ -16,16 +25,24 @@ if __name__ == "__main__":
     query_counter_result = mongoConnection.count_data_from_mongo({"region": "Africa"})
     print(f"Soviele Datensätze entsprechen deinem Query: {query_counter_result}")
 
-    query_content = mongoConnection.read_data_from_mongo({"file_id": 312})
-    print(query_content)
+    #mongoConnection.send_data_to_mongo(dataset)
+
+
+    #query_counter_result = mongoConnection.count_data_from_mongo({"region": "Africa"})
+    #print(f"Soviele Datensätze entsprechen deinem Query: {query_counter_result}")
+
+    #query_content = mongoConnection.read_data_from_mongo({"file_id": 312})
+    #print(query_content)
+
+    So kann man z.B. die namen der datensätze ermitteln bei denen dein query zu trifft."""
 """
-"""So kann man z.B. die namen der datensätze ermitteln bei denen dein query zu trifft."""
-    #query_content = mongoConnection.count_data_from_mongo({
-    #    "region": {"$in": ["Europe"]},
-    #    "instrument": {"$in": ["Elephant"]}
-    #})
+query_content = mongoConnection.count_data_from_mongo({
+   "region": {"$in": ["Europe"]},
+"instrument": {"$in": ["Elephant"]}
+})
 print(query_content)
 """
-#for data in query_content:
-#   print(data['file_name'])
+"""
+    for data in query_content:
+        print(data['file_name'])
 """

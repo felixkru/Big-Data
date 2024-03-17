@@ -71,25 +71,33 @@ class HDF5Analyzer:
                                     checked_value = CheckData.parse_type_to_float(item['wall_thickness'])
                                     if len(checked_value) != 1000:
                                         checked_value = CheckData.handle_ascii_string(item['wall_thickness'])
-                                        if not checked_value:
+
+                                        if len(checked_value) == 0:
                                             checked_value = CheckData.handel_byte_string(item['wall_thickness'])
-                                            CheckData.handle_easter_egg(item['wall_thickness'], file_name)
+
+                                            if len(checked_value) == 0:
+                                                checked_value = CheckData.handle_easter_egg(item['wall_thickness'], file_name)
 
                                 if 'WALL_THICKNESS' in item:
                                     checked_value = CheckData.parse_type_to_float(item['WALL_THICKNESS'])
                                     if len(checked_value) != 1000:
                                         checked_value = CheckData.handle_ascii_string(item['WALL_THICKNESS'])
-                                        if not checked_value:
+                                        if len(checked_value) == 0:
                                             checked_value = CheckData.handel_byte_string(item['WALL_THICKNESS'])
-                                            CheckData.handle_easter_egg(item['wall_thickness'], file_name)
+
+                                            if len(checked_value) == 0:
+                                                checked_value = CheckData.handle_easter_egg(item['WALL_THICKNESS'], file_name)
 
                                 if 'wall_thickness_' in item:
                                     checked_value = CheckData.parse_type_to_float(item['wall_thickness_'])
                                     if len(checked_value) != 1000:
                                         checked_value = CheckData.handle_ascii_string(item['wall_thickness_'])
-                                        if not checked_value:
+
+                                        if len(checked_value) == 0:
                                             checked_value = CheckData.handel_byte_string(item['wall_thickness_'])
-                                            CheckData.handle_easter_egg(item['wall_thickness'], file_name)
+
+                                            if len(checked_value) == 0:
+                                                checked_value = CheckData.handle_easter_egg(item['wall_thickness_'], file_name)
 
                                 single_dataset["wall_thickness"] = list(checked_value)
 
@@ -98,9 +106,12 @@ class HDF5Analyzer:
 
                                 if len(checked_value) != 1000:
                                     checked_value = CheckData.handle_ascii_string(item['magnetization'])
-                                    if not checked_value:
+
+                                    if len(checked_value) == 0:
                                         checked_value = CheckData.handel_byte_string(item['magnetization'])
-                                        CheckData.handle_easter_egg(item['magnetization'], file_name)
+
+                                        if len(checked_value) == 0:
+                                            checked_value = CheckData.handle_easter_egg(item['magnetization'], file_name)
 
                                 single_dataset["magnetization"] = list(checked_value)
 
@@ -120,14 +131,19 @@ class HDF5Analyzer:
 
                             if 'timestamp' in item or 'TIMESTAMP' in item or 'timestamp_' in item:
                                 if 'timestamp' in item:
-                                    checked_value = CheckData.check_array_length(item['timestamp'])
-                                if 'TIMESTAMP' in item:
-                                    checked_value = CheckData.check_array_length(item['TIMESTAMP'])
-                                if 'timestamp_' in item:
-                                    checked_value = CheckData.check_array_length(item['timestamp_'])
+                                    checked_value = CheckData.parse_type_to_float(item['timestamp'])
+                                    if len(checked_value) != 1000:
+                                        checked_value = CheckData.convert_datetime_to_float(item['timestamp'], file_name)
 
-                                checked_value = CheckData.parse_type_to_float(checked_value)
-                                CheckData.convert_float_to_date(checked_value)
+                                if 'TIMESTAMP' in item:
+                                    checked_value = CheckData.parse_type_to_float(item['TIMESTAMP'])
+                                    if len(checked_value) != 1000:
+                                        checked_value = CheckData.convert_datetime_to_float(item['TIMESTAMP'], file_name)
+
+                                if 'timestamp_' in item:
+                                    checked_value = CheckData.parse_type_to_float(item['timestamp_'])
+                                    if len(checked_value) != 1000:
+                                        checked_value = CheckData.convert_datetime_to_float(item['timestamp_'], file_name)
                                 single_dataset["timestamp"] = list(checked_value)
 
                             if 'velocity' in item or 'VELOCITY' in item or 'velocity_' in item:
@@ -151,23 +167,6 @@ class HDF5Analyzer:
         return self.open_h5_files_and_return_file_data(folder_paths)
 
     @staticmethod
-    def handle_and_set_correct_attributes_for_velocity_calculation(data):
-        response = [0, 0, 0]
-
-        for data_set in data:
-
-            if 'distance' in data_set:
-                response[0] = {'distance': data_set['distance']}
-
-            if 'velocity' in data_set:
-                response[1] = {'velocity': data_set['velocity']}
-
-            if 'timestamp' in data_set:
-                response[2] = {'timestamp': data_set['timestamp']}
-
-        return response
-
-    @staticmethod
     def create_file_name(file_path):
         return os.path.splitext(os.path.basename(file_path))[0]
 
@@ -184,6 +183,24 @@ class HDF5Analyzer:
                 instrument_attribute = item[1]
 
         return region_attribute, instrument_attribute
+
+    @staticmethod
+    def set_full_distance_for_each_set(distance_dataset, filename):
+        try:
+            full_distance = distance_dataset['distance'][-1]
+            distance_dataset['full_distance'] = full_distance
+
+            return distance_dataset
+        except ValueError as e:
+            print("Es konnte keine maximale Distanz ermittelt werden: ", filename)
+            return distance_dataset
+
+    @staticmethod
+    def handle_set_full_distance(datasets):
+        new_set = []
+        for data_set in datasets:
+            new_set.append(HDF5Analyzer.set_full_distance_for_each_set(data_set, data_set['file_name']))
+        return new_set
 
 
 if __name__ == "__main__":

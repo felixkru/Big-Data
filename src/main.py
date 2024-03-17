@@ -5,21 +5,17 @@ from calculate_location_parameters import CalculateLocationParameters
 
 
 def handle_file_reader_and_write_to_database():
-    path = "../test"
+    path = "../dataset"
     analyzer = file_reader_h5.HDF5Analyzer(path)
     dataset = analyzer.handle_file_reader()
 
     # Bei dem dataset_with_velocity gibt es noch Probleme durch die Umwandulng des Timestamps
-
     dataset_with_velocity = check_data.CheckData.calculate_velocity_from_time_and_distance(dataset)
     # Bei der Berechnung der statistischen Werte gibt es noch Probleme durch die falschen Timstamps
     dataset_with_statistic_parameters = CalculateLocationParameters.handle_update_average_and_median_calculation(
         dataset_with_velocity)
 
-    test = dataset_with_statistic_parameters
-    print(len(test))
-    print(test[0]['magnetization'])
-    #mongoConnection.send_data_to_mongo(dataset_with_statistic_parameters)
+    mongoConnection.send_data_to_mongo(dataset_with_statistic_parameters)
 
 
 if __name__ == "__main__":

@@ -2,7 +2,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 import pymongo
-
+from calculate_location_parameters import CalculateLocationParameters
 from outlierhandler import OutlierHandler
 import file_reader_h5
 import mongoConnection
@@ -57,11 +57,46 @@ def handle_outliers_and_prepare_for_db_push():
     return bulk_operations
 
 
+def calculate_median_and_average_and_write_to_db():
+    query = {}
+    collection = "european_dolphins"
+    updates = []
+    bulk_operations = []
+
+    results = mongoConnection.read_data_from_mongo(query, collection)
+
+    new_set = CalculateLocationParameters.handle_update_average_and_median_calculation_without_outliers(results)
+
+    for index, element in enumerate(results):
+        db_filter = {"file_name": element["file_name"]}
+        update = {
+            "$set": {
+                "velocity_median": new_set[index]["velocity_median"],
+                "velocity_average": new_set[index]["velocity_average"],
+                "magnetization_median": new_set[index]["magnetization_median"],
+                "magnetization_average": new_set[index]["magnetization_average"],
+                "wall_thickness_median": new_set[index]["wall_thickness_median"],
+                "wall_thickness_average": new_set[index]["wall_thickness_average"],
+            }
+        }
+        updates.append((db_filter, update))
+
+    for db_filter, update in updates:
+        operation = pymongo.UpdateOne(db_filter, update)
+        bulk_operations.append(operation)
+
+    return bulk_operations
+
+
 if __name__ == "__main__":
 
-    bulk_operations = handle_outliers_and_prepare_for_db_push()
-    mongoConnection.bulk_update_mongo(bulk_operations, "european_dolphins")
+    #operations = calculate_median_and_average_and_write_to_db()
+    #mongoConnection.bulk_update_mongo(operations, "european_dolphins")
 
+    #bulk_operations = handle_outliers_and_prepare_for_db_push()
+    #mongoConnection.bulk_update_mongo(bulk_operations, "european_dolphins")
+
+    """
     query_content = mongoConnection.read_data_from_mongo({
         "region": {"$in": ["Europe"]},
         "instrument": {"$in": ["Dolphin"]},
@@ -81,6 +116,8 @@ if __name__ == "__main__":
 
         except Exception as e:
             print(f"Error: {e}")
+    """
+
 
     # path = "../dataset"
     # analyzer = file_reader_h5.HDF5Analyzer(path)

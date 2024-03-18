@@ -40,6 +40,26 @@ class CalculateLocationParameters:
 
         return data_set
 
+    @staticmethod
+    def handle_update_average_and_median_calculation_without_outliers(data_set):
+
+        for data_array in data_set:
+            try:
+                data_array["wall_thickness_median"] = CalculateLocationParameters.calculate_median(data_array['wall_thickness_clean'])
+                data_array["wall_thickness_average"] = CalculateLocationParameters.calculate_average(data_array['wall_thickness_clean'])
+
+                data_array["magnetization_median"] = CalculateLocationParameters.calculate_median(data_array['magnetization_straightened_clean'])
+                data_array["magnetization_average"] = CalculateLocationParameters.calculate_average(data_array['magnetization_straightened_clean'])
+
+                data_array["velocity_median"] = CalculateLocationParameters.calculate_median(data_array['velocity_clean'])
+                data_array["velocity_average"] = CalculateLocationParameters.calculate_average(data_array['velocity_clean'])
+
+            except Exception as e:
+                print("Fehler beim Errechnen des Medians oder des Durchschnitts: ", e)
+                print(data_array['file_name'])
+
+        return data_set
+
 
 if __name__ == '__main__':
     parameters = [7, 2, 1, 6, 3, 9, 5, 4, 25]

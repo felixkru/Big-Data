@@ -1,5 +1,9 @@
 from datetime import datetime
 import numpy as np
+import pymongo
+
+import mongoConnection
+import math
 
 
 class CheckData:
@@ -142,3 +146,28 @@ class CheckData:
             print("Velocity konnte nicht berechnet werden!", e)
             return velocity
 
+    @staticmethod
+    def update_magnetization_in_database():
+        collection = "european_dolphins"
+        query = {}
+        updates = []
+        updates_bulk = []
+        result = mongoConnection.read_data_from_mongo(query, collection)
+        for item in result:
+            counter = -1
+            magnetization_values = item["magnetization"]
+            for value_index in magnetization_values:
+                counter += 1
+                if math.isnan(value_index):
+                    mean = (magnetization_values[counter-1] + magnetization_values[counter+1]) / 2
+                    magnetization_values[counter] = mean
+                    db_filter = {"file_name": item["file_name"]}
+                    update = {"$set": {"magnetization": magnetization_values}}
+                    updates.append((db_filter, update))
+        for db_filter, update in updates:
+            operation = pymongo.UpdateOne(db_filter, update)
+            updates_bulk.append(operation)
+        #mongoConnection.bulk_update_mongo(updates_bulk, collection)
+
+if __name__ == "__main__":
+    CheckData.update_magnetization_in_database()

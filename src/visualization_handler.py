@@ -49,3 +49,41 @@ class VisualizationHandler:
         mongoConnection.close_mongo_client()
         visual_data.create_pie_chart(results_per_region, regions, title)
 
+    @staticmethod
+    def handle_visualisation_of_distance_and_velocity():
+        visual_data = VisualisationData()
+        collection = "complete_dataset"
+        query = {"region": "Europe", "instrument": "Dolphin"}
+        query2 = {"region": "Europe", "instrument": "Dog"}
+
+        results = mongoConnection.read_data_from_mongo(query, collection)
+        results2 = mongoConnection.read_data_from_mongo(query2, collection)
+        mongoConnection.close_mongo_client()
+
+        x_data = []
+        y_data = []
+        x_data2 = []
+        y_data2 = []
+
+        for item in results:
+            x_data.append(item['velocity_median'])
+            y_data.append(item['full_distance'])
+
+        for item in results2:
+            x_data2.append(item['velocity_median'])
+            y_data2.append(item['full_distance'])
+
+        complete_x_data = []
+        complete_x_data.append(x_data)
+        complete_x_data.append(x_data2)
+
+        complete_y_data = []
+        complete_y_data.append(y_data)
+        complete_y_data.append(y_data2)
+
+        visual_data.create_scatterplot_with_different_data_src_without_index(complete_x_data, complete_y_data, 'velocity_median', 'full_distance', 'Velocity vs Full Distance')
+
+
+if __name__ == "__main__":
+    VisualizationHandler.handle_visualisation_of_distance_and_velocity()
+

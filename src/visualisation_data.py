@@ -50,6 +50,23 @@ class VisualisationData:
         plt.title(file_name)
         plt.show()
 
+    @staticmethod
+    def create_scatterplot_with_different_data_src_without_index(data_sets_x, data_sets_y, x_ax_label, y_ax_label,plotName):
+
+        fig, ax = plt.subplots()
+
+        for index, x_data in enumerate(data_sets_x):
+            ax.scatter(x_data, data_sets_y[index])
+
+        ax.set_xlabel(x_ax_label)
+        ax.set_ylabel(y_ax_label)
+        ax.legend()
+
+        plt.legend()
+        plt.grid()
+        plt.title(plotName)
+        plt.show()
+
 
 if __name__ == '__main__':
     y_data = {"distance": [8, 12, 3, -3.4, 5, 25, 7, 8, 14, -3, 44]}

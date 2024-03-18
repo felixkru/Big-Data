@@ -3,7 +3,7 @@ from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 import certifi
 
-uri = ""
+uri = "mongodb+srv://felixkruse:eQgAyNbfBXeO5JIs@cluster0.bkat9hf.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 ca = certifi.where()
 default_client = MongoClient(uri, server_api=ServerApi('1'), tlsCAFile=ca)
 
@@ -37,8 +37,6 @@ def read_data_from_mongo(query=None, collection="raw_measurements"):
     except Exception as e:
         print(f'Fehler beim lesen der Daten: {e}')
         return None
-    finally:
-        client.close()
 
 
 def count_data_from_mongo(query=None, collection="raw_measurements"):

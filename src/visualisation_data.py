@@ -62,7 +62,6 @@ class VisualisationData:
         ax.set_ylabel(y_ax_label)
         ax.legend()
 
-        plt.legend()
         plt.grid()
         plt.title(plotName)
         plt.show()

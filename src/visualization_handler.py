@@ -1,5 +1,7 @@
 from visualisation_data import VisualisationData
 import mongoConnection
+from use_db_scan import UseDBSCAN
+import matplotlib.pyplot as plt
 
 
 class VisualizationHandler:
@@ -51,6 +53,10 @@ class VisualizationHandler:
 
     @staticmethod
     def handle_visualisation_of_distance_and_velocity():
+        """
+        Ziel der Funktion ist es mehrer durchschnittswerte zu Clustern. Diese können als Gruppe geclustert werden, aber auch
+        mehrer Abfragen können in einem Chart visualisiert werden.
+        """
         visual_data = VisualisationData()
         collection = "complete_dataset"
         query = {"region": "Europe", "instrument": "Dolphin"}
@@ -83,7 +89,35 @@ class VisualizationHandler:
 
         visual_data.create_scatterplot_with_different_data_src_without_index(complete_x_data, complete_y_data, 'velocity_median', 'full_distance', 'Velocity vs Full Distance')
 
+    @staticmethod
+    def visual_data_with_clustering_db_scan():
+        collection = "european_dolphins"
+        query = {"region": "Europe", "instrument": "Dolphin"}
+        results = mongoConnection.read_data_from_mongo(query, collection)
+
+        current_cluster_set = results[0]['wall_thickness_clean']
+
+        plt.figure(figsize=(8, 4))
+        plt.scatter(range(len(current_cluster_set)), current_cluster_set, c=current_cluster_set, cmap='viridis',
+                    s=50, edgecolors='k')
+        plt.xlabel("Datenpunkt")
+        plt.ylabel("Wall Thickness")
+        plt.title("Original Data - Wall Thickness")
+        plt.colorbar()
+        plt.show()
+
+        clusters = UseDBSCAN.use_db_scan(0.2, 2, current_cluster_set)
+
+        plt.figure(figsize=(8, 4))
+        plt.scatter(range(len(clusters)), clusters, c=clusters, cmap='viridis', s=50, edgecolors='k')
+        plt.xlabel("Datenpunkt")
+        plt.ylabel("Cluster")
+        plt.title("Clustering wall_thickness without outliers")
+        plt.colorbar()
+        plt.show()
+
 
 if __name__ == "__main__":
-    VisualizationHandler.handle_visualisation_of_distance_and_velocity()
+    #VisualizationHandler.handle_visualisation_of_distance_and_velocity()
+    VisualizationHandler.visual_data_with_clustering_db_scan()
 

@@ -19,15 +19,21 @@ class VisualizationHandler:
         visual_data.create_scatter_plot(magnetization, data_sets['file_name'])
 
     @staticmethod
-    def handle_scatter_chart_with_multiple_arguments(data_sets):
+    def handle_scatter_chart_with_multiple_arguments():
         visual_data = VisualisationData()
+        query = {}
+        collection = "european_dolphins"
 
-        magnetization = {"magnetization": data_sets['magnetization']}
-        velocity = {"velocity": data_sets['velocity']}
-        wall_thickness = {"wall_thickness": data_sets['wall_thickness']}
+        results = mongoConnection.read_data_from_mongo(query, collection)
+
+        data_sets = results[8]
+
+        magnetization = {"magnetization": data_sets['magnetization_straightened_clean']}
+        velocity = {"velocity": data_sets['velocity_clean']}
+        wall_thickness = {"wall_thickness": data_sets['wall_thickness_clean']}
         defect_channel = {"defect_channel": data_sets['defect_channel']}
 
-        relevant_sets = [magnetization, velocity, defect_channel, wall_thickness]
+        relevant_sets = [magnetization, defect_channel, wall_thickness]
 
         visual_data.create_scatterplot_with_different_data_src(relevant_sets, data_sets['file_name'])
 
@@ -49,3 +55,6 @@ class VisualizationHandler:
         mongoConnection.close_mongo_client()
         visual_data.create_pie_chart(results_per_region, regions, title)
 
+
+if __name__ == "__main__":
+    VisualizationHandler.handle_scatter_chart_with_multiple_arguments()

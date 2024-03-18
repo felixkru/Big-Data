@@ -3,13 +3,13 @@ from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 import certifi
 
-uri = ""
+uri = "mongodb+srv://felixkruse:eQgAyNbfBXeO5JIs@cluster0.bkat9hf.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 ca = certifi.where()
 default_client = MongoClient(uri, server_api=ServerApi('1'), tlsCAFile=ca)
 
 
 def send_data_to_mongo(processed_datasets, collection):
-    client = default_client
+    client = MongoClient(uri, server_api=ServerApi('1'), tlsCAFile=ca)
     database = client['Big-D']
     collection = database[collection]
     try:
@@ -23,7 +23,7 @@ def send_data_to_mongo(processed_datasets, collection):
 
 
 def read_data_from_mongo(query=None, collection="raw_measurements"):
-    client = default_client
+    client = MongoClient(uri, server_api=ServerApi('1'), tlsCAFile=ca)
     database = client['Big-D']
     collection = database[collection]
     query_result = []
@@ -42,7 +42,7 @@ def read_data_from_mongo(query=None, collection="raw_measurements"):
 
 
 def count_data_from_mongo(query=None, collection="raw_measurements"):
-    client = default_client
+    client = MongoClient(uri, server_api=ServerApi('1'), tlsCAFile=ca)
     database = client['Big-D']
     collection = database[collection]
     if query is None:
@@ -63,7 +63,7 @@ def close_mongo_client():
 
 
 def update_data_from_mongo(file=None, input_data=None, collection="raw_measurements"):
-    client = default_client
+    client = MongoClient(uri, server_api=ServerApi('1'), tlsCAFile=ca)
     database = client['Big-D']
     collection = database[collection]
     db_filter = file
@@ -81,7 +81,7 @@ def update_data_from_mongo(file=None, input_data=None, collection="raw_measureme
 
 
 def bulk_update_mongo(updates, collection="raw_measurements"):
-    client = default_client
+    client = MongoClient(uri, server_api=ServerApi('1'), tlsCAFile=ca)
     database = client['Big-D']
     collection = database[collection]
     try:

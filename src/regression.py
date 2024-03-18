@@ -8,7 +8,7 @@ import pymongo
 
 
 def main():
-    counter = 0
+    error_counter = 0
     updates = []
     bulk_operations = []
     query_content = mongoConnection.read_data_from_mongo({
@@ -40,16 +40,17 @@ def main():
             update = {"$set": {"magnetization_straightened": residuale}}
 
             updates.append((db_filter, update))
-            counter += 1
+            # counter += 1
         except Exception as e:
             print(f"Error: {e} ")
-            counter += 1
+            error_counter += 1
             x = []
             y = []
             continue
     for db_filter, update in updates:
         operation = pymongo.UpdateOne(db_filter, update)
         bulk_operations.append(operation)
+    print(f"Total number of Errors: {error_counter}")
 
     mongoConnection.bulk_update_mongo(bulk_operations, "european_dolphins")
 

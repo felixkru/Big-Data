@@ -46,6 +46,6 @@ class VisualizationHandler:
             else:
                 results_per_region.append(0)
 
-        mongoConnection.close_mongo_client()
+       # mongoConnection.close_mongo_client()
         visual_data.create_pie_chart(results_per_region, regions, title)
 

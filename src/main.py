@@ -111,18 +111,18 @@ def heatmap_seaborn():
     visualization_data_y = []
     visualization_data_x = []
 
-    query_result = mongoConnection.read_data_from_mongo({},
+    query_result = mongoConnection.read_data_from_mongo({"file_name": "52bbfc31-61ac-4d28-86d1-7d181a278475"},
                                                         "european_dolphins")
     try:
         for dataset in query_result:
 
             try:
-                for datapoint in dataset["magnetization_straightened_clean"]:
+                for datapoint in dataset["velocity_clean"]:
                     visualization_data_y.append(datapoint)
             except Exception as e:
                 print(f"Exception occurred: {e}")
                 continue
-            for datapoint in dataset["wall_thickness_clean"]:
+            for datapoint in dataset["magnetization_straightened_clean"]:
                 try:
                     visualization_data_x.append(datapoint)
                 except Exception as e:
@@ -134,16 +134,49 @@ def heatmap_seaborn():
     print(len(visualization_data_x))
     print(len(visualization_data_y))
 
-    plot = sns.jointplot(x=visualization_data_x, y=visualization_data_y, kind='hex', gridsize=30, cmap="viridis", marginal_kws=dict(bins=50))
-    plot.set_axis_labels("Wandstärke", "Magnetisierung")
+    plot = sns.jointplot(x=visualization_data_x, y=visualization_data_y, kind='hex', gridsize=30, cmap="plasma", marginal_kws=dict(bins=50))
+    plot.set_axis_labels("Magnetisierung", "Velocity")
     plt.tight_layout()
+    plt.show()
+
+
+def seaborn_histogram():
+    visualization_data = []
+    query_result = mongoConnection.read_data_from_mongo({},
+                                                        "european_dolphins")
+
+    for dataset in query_result:
+        visualization_data.append(dataset["year"])
+
+    sns.set_theme(style="whitegrid")
+
+    ax = sns.histplot(data=visualization_data,
+                      color="skyblue",  # Farbe der Balken
+                      binwidth=1,  # Breite der Balken, angepasst nach Bedarf
+                      kde=True,  # Fügt eine Kernel-Density-Estimation-Linie hinzu
+                      )
+
+    ax.set(title='Jahr der Messsung: Europe / Dolphin',
+           xlabel='Jahr',
+           ylabel='Häufigkeit')
+
+    plt.tight_layout()
+
     plt.show()
 
 
 if __name__ == "__main__":
     # median_average_visualization()
     # heatmap_no2()
-    heatmap_seaborn()
+    # heatmap_seaborn()
+    # seaborn_histogram()
+
+    query_result = mongoConnection.read_data_from_mongo({
+            "region": {"$in": ["Europe"]},
+            "instrument": {"$in": ["Dog"]}
+        }, "complete_dataset")
+
+    mongoConnection.send_data_to_mongo(query_result, "european_dog")
     """
     Die Funktion verarbeitet das komplette Datenset
     """

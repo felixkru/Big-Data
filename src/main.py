@@ -27,16 +27,16 @@ def median_average_visualization():
     visualization_data = []
     query_result = mongoConnection.read_data_from_mongo({
             "region": {"$in": ["Europe"]},
-            "instrument": {"$in": ["Dolphin"]}
-        }, "european_dolphins")
+            "instrument": {"$in": ["Dog"]}
+        }, "european_dog")
     for dataset in query_result:
         visualization_data.append(dataset["full_distance"])
 
     plt.hist(visualization_data, bins=40)
     plt.xlabel("Distance")
     plt.ylabel("Häufigkeit")
-    plt.text(350, 6, "Median: " + str(np.median(visualization_data)))
-    plt.text(350, 5.5, "Average: " + str(np.average(visualization_data)))
+    plt.text(0, 6, "Median: " + str(np.median(visualization_data)))
+    plt.text(0, 5.5, "Average: " + str(np.average(visualization_data)))
     plt.show()
 
 
@@ -111,18 +111,17 @@ def heatmap_seaborn():
     visualization_data_y = []
     visualization_data_x = []
 
-    query_result = mongoConnection.read_data_from_mongo({"file_name": "52bbfc31-61ac-4d28-86d1-7d181a278475"},
+    query_result = mongoConnection.read_data_from_mongo({},
                                                         "european_dolphins")
     try:
         for dataset in query_result:
-
             try:
-                for datapoint in dataset["velocity_clean"]:
+                for datapoint in dataset["magnetization"]:
                     visualization_data_y.append(datapoint)
             except Exception as e:
                 print(f"Exception occurred: {e}")
                 continue
-            for datapoint in dataset["magnetization_straightened_clean"]:
+            for datapoint in dataset["wall_thickness_clean"]:
                 try:
                     visualization_data_x.append(datapoint)
                 except Exception as e:
@@ -135,7 +134,7 @@ def heatmap_seaborn():
     print(len(visualization_data_y))
 
     plot = sns.jointplot(x=visualization_data_x, y=visualization_data_y, kind='hex', gridsize=30, cmap="plasma", marginal_kws=dict(bins=50))
-    plot.set_axis_labels("Magnetisierung", "Velocity")
+    plot.set_axis_labels("Wandstärke", "Magnetisierung")
     plt.tight_layout()
     plt.show()
 
@@ -143,7 +142,7 @@ def heatmap_seaborn():
 def seaborn_histogram():
     visualization_data = []
     query_result = mongoConnection.read_data_from_mongo({},
-                                                        "european_dolphins")
+                                                        "european_dog")
 
     for dataset in query_result:
         visualization_data.append(dataset["year"])
@@ -156,7 +155,7 @@ def seaborn_histogram():
                       kde=True,  # Fügt eine Kernel-Density-Estimation-Linie hinzu
                       )
 
-    ax.set(title='Jahr der Messsung: Europe / Dolphin',
+    ax.set(title='Jahr der Messsung: Europe / Dog',
            xlabel='Jahr',
            ylabel='Häufigkeit')
 
@@ -168,15 +167,9 @@ def seaborn_histogram():
 if __name__ == "__main__":
     # median_average_visualization()
     # heatmap_no2()
-    # heatmap_seaborn()
+    heatmap_seaborn()
     # seaborn_histogram()
 
-    query_result = mongoConnection.read_data_from_mongo({
-            "region": {"$in": ["Europe"]},
-            "instrument": {"$in": ["Dog"]}
-        }, "complete_dataset")
-
-    mongoConnection.send_data_to_mongo(query_result, "european_dog")
     """
     Die Funktion verarbeitet das komplette Datenset
     """

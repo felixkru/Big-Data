@@ -9,7 +9,7 @@ import mongoConnection
 def jahreszahl_ermitteln():
     updates = []
     bulk_operations = []
-    query_result = mongoConnection.read_data_from_mongo({}, "european_dolphins")
+    query_result = mongoConnection.read_data_from_mongo({}, "european_dog")
     for dataset in query_result:
         mean = np.median(dataset["timestamp"])
         datum = datetime.datetime.utcfromtimestamp(mean)
@@ -25,7 +25,7 @@ def jahreszahl_ermitteln():
         operation = pymongo.UpdateOne(db_filter, update)
         bulk_operations.append(operation)
 
-    mongoConnection.bulk_update_mongo(bulk_operations, "european_dolphins")
+    mongoConnection.bulk_update_mongo(bulk_operations, "european_dog")
 
 
 jahreszahl_ermitteln()

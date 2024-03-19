@@ -13,8 +13,8 @@ def main():
     bulk_operations = []
     query_content = mongoConnection.read_data_from_mongo({
         "region": {"$in": ["Europe"]},
-        "instrument": {"$in": ["Dolphin"]}
-    }, "european_dolphins")
+        "instrument": {"$in": ["Dog"]}
+    }, "european_dog")
     for element in query_content:
         try:
             x = np.array(element["timestamp"])
@@ -52,7 +52,7 @@ def main():
         bulk_operations.append(operation)
     print(f"Total number of Errors: {error_counter}")
 
-    mongoConnection.bulk_update_mongo(bulk_operations, "european_dolphins")
+    mongoConnection.bulk_update_mongo(bulk_operations, "european_dog")
 
 
 main()

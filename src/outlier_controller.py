@@ -59,7 +59,7 @@ def handle_outliers_and_prepare_for_db_push():
 
 def calculate_median_and_average_and_write_to_db():
     query = {}
-    collection = "european_dolphins"
+    collection = "european_dog"
     updates = []
     bulk_operations = []
 
@@ -90,8 +90,8 @@ def calculate_median_and_average_and_write_to_db():
 
 if __name__ == "__main__":
 
-    #operations = calculate_median_and_average_and_write_to_db()
-    #mongoConnection.bulk_update_mongo(operations, "european_dolphins")
+    operations = calculate_median_and_average_and_write_to_db()
+    mongoConnection.bulk_update_mongo(operations, "european_dolphins")
 
     #bulk_operations = handle_outliers_and_prepare_for_db_push()
     #mongoConnection.bulk_update_mongo(bulk_operations, "european_dolphins")

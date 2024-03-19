@@ -38,8 +38,7 @@ class VisualisationData:
         for data_set in data_sets:
             if len(data_set) == len(data_sets[0]):
                 y_ax_data = list(data_set.values())[0]
-                ax.scatter(index_data, y_ax_data, label=list(data_set.keys())[0])
-                ax.plot(y_ax_data, linestyle='dotted')
+                ax.scatter(index_data, y_ax_data, label=list(data_set.keys())[0], s=10)
 
         ax.set_ylabel(list(data_sets[0].keys())[0])
         ax.set_xlabel("Point-Nr.")

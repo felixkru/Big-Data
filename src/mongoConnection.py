@@ -74,8 +74,6 @@ def update_data_from_mongo(file=None, input_data=None, collection="raw_measureme
     except Exception as e:
         print(f'Fehler beim updaten der Datei: {e}')
         return None
-    finally:
-        client.close()
 
 
 def bulk_update_mongo(updates, collection="raw_measurements"):

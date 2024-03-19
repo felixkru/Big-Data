@@ -37,8 +37,6 @@ def read_data_from_mongo(query=None, collection="raw_measurements"):
     except Exception as e:
         print(f'Fehler beim lesen der Daten: {e}')
         return None
-    finally:
-        client.close()
 
 
 def count_data_from_mongo(query=None, collection="raw_measurements"):

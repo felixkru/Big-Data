@@ -8,7 +8,7 @@ from src import mongoConnection
 visualization_data_x = []
 visualization_data_y = []
 query_result = mongoConnection.read_data_from_mongo({},
-                                                    "european_dolphins")
+                                                    "european_dog")
 try:
     for dataset in query_result:
         try:
@@ -38,6 +38,10 @@ indices_to_delete = np.where(visualization_data_x < 0)
 visualization_data_x = np.delete(visualization_data_x, indices_to_delete)
 visualization_data_y = np.delete(visualization_data_y, indices_to_delete)
 
+indices_to_delete = np.where(visualization_data_x > 35)
+visualization_data_x = np.delete(visualization_data_x, indices_to_delete)
+visualization_data_y = np.delete(visualization_data_y, indices_to_delete)
+
 # counter = -1
 # for datapoint in visualization_data_x:
 #     if datapoint < 0:
@@ -46,19 +50,31 @@ visualization_data_y = np.delete(visualization_data_y, indices_to_delete)
 
 
 # Die Funktion, die an die Daten angepasst werden soll
-def modell_funktion(x, a, b, c, d):
+def modell_funktion_polynom(x, a, b, c, d):
     return a * x**3 + b * x**2 + c * x + d
-    # return a * np.sin(b * x + c) + d
+
+
+def modell_funktion_sinus(x, a, b):
+    return a * np.sin(b * x)
 
 
 # curve_fit benutzen, um die Parameter a und b zu finden
-parameter, parameter_kovarianz = curve_fit(modell_funktion, visualization_data_x, visualization_data_y)
+parameter, parameter_kovarianz = curve_fit(modell_funktion_polynom, visualization_data_x, visualization_data_y)
+
+y_vorhersage = modell_funktion_polynom(visualization_data_x, *parameter)
+
+ss_res = np.sum((visualization_data_y - y_vorhersage)**2)
+ss_tot = np.sum((visualization_data_y - np.mean(visualization_data_y))**2)
+r2 = 1 - (ss_res / ss_tot)
+
+print(f"R^2: {r2}")
 
 print("Gefundene Parameter:", parameter)
 # Die gefundene Kurve zeichnen
 # plt.scatter(visualization_data_x, visualization_data_y, label='Daten')
 plot = sns.jointplot(x=visualization_data_x, y=visualization_data_y, kind='hex', gridsize=30, cmap="plasma", marginal_kws=dict(bins=50))
-plt.plot(visualization_data_x, modell_funktion(visualization_data_x, *parameter), label='Polynom 3. Grades', color='red')
+plt.plot(visualization_data_x, modell_funktion_polynom(visualization_data_x, *parameter), label='Polynom 3. Grades', color='red')
 plot.set_axis_labels("Wandstärke", "Magnetisierung")
 plt.legend()
+plt.tight_layout()
 plt.show()

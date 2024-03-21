@@ -2,6 +2,7 @@ import file_reader_h5
 import check_data
 import mongoConnection
 from calculate_location_parameters import CalculateLocationParameters
+import heatmap_visualizer
 
 
 def handle_file_reader_and_write_to_database():
@@ -18,6 +19,8 @@ def handle_file_reader_and_write_to_database():
 
 
 if __name__ == "__main__":
+
+    heatmap_visualizer.heatmap_seaborn()
 
     """
     Die Funktion verarbeitet das komplette Datenset

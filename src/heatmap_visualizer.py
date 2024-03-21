@@ -99,11 +99,11 @@ def heatmap_seaborn():
     visualization_data_x = []
 
     query_result = mongoConnection.read_data_from_mongo({},
-                                                        "european_dolphins")
+                                                        "asian_dolphins")
     try:
         for dataset in query_result:
             try:
-                for datapoint in dataset["magnetization"]:
+                for datapoint in dataset["magnetization_straightened_clean"]:
                     visualization_data_y.append(datapoint)
             except Exception as e:
                 print(f"Exception occurred: {e}")

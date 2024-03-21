@@ -11,10 +11,7 @@ import mongoConnection
 def handle_outliers_and_prepare_for_db_push():
     updates = []
     bulk_operations = []
-    query_content = mongoConnection.read_data_from_mongo({
-        "region": {"$in": ["Europe"]},
-        "instrument": {"$in": ["Dog"]}
-    }, "european_dog")
+    query_content = mongoConnection.read_data_from_mongo({}, "asian_dolphins")
 
     for element in query_content:
         db_filter = {"file_name": element["file_name"]}
@@ -65,4 +62,4 @@ def handle_outliers_and_prepare_for_db_push():
 if __name__ == "__main__":
 
     bulk_operations = handle_outliers_and_prepare_for_db_push()
-    mongoConnection.bulk_update_mongo(bulk_operations, "european_dog")
+    mongoConnection.bulk_update_mongo(bulk_operations, "asian_dolphins")

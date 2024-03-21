@@ -11,10 +11,7 @@ def main():
     error_counter = 0
     updates = []
     bulk_operations = []
-    query_content = mongoConnection.read_data_from_mongo({
-        "region": {"$in": ["Europe"]},
-        "instrument": {"$in": ["Dog"]}
-    }, "european_dog")
+    query_content = mongoConnection.read_data_from_mongo({}, "asian_dolphins")
     for element in query_content:
         try:
             x = np.array(element["timestamp"])
@@ -28,7 +25,7 @@ def main():
             model = LinearRegression()
             model.fit(x.reshape(-1, 1), y)
 
-            residuale = y - model.predict(x.reshape(-1, 1)) + np.mean(y[:100])
+            residuale = y - model.predict(x.reshape(-1, 1)) + np.mean(y[:25])
 
             # matplotlib.pyplot.scatter(x, residuale)
             # matplotlib.pyplot.savefig(f"../plots/time_over_mag_regression_{counter}.png")
@@ -52,7 +49,7 @@ def main():
         bulk_operations.append(operation)
     print(f"Total number of Errors: {error_counter}")
 
-    mongoConnection.bulk_update_mongo(bulk_operations, "european_dog")
+    mongoConnection.bulk_update_mongo(bulk_operations, "asian_dolphins")
 
 
 main()

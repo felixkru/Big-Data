@@ -2,6 +2,7 @@ from visualisation_data import VisualisationData
 import mongoConnection
 from use_db_scan import UseDBSCAN
 import matplotlib.pyplot as plt
+import numpy as np
 
 
 class VisualizationHandler:
@@ -101,7 +102,7 @@ class VisualizationHandler:
         query = {"region": "Europe", "instrument": "Dolphin"}
         results = mongoConnection.read_data_from_mongo(query, collection)
 
-        current_cluster_set = results[0]['wall_thickness_clean']
+        current_cluster_set = results[4]['wall_thickness_clean']
 
         plt.figure(figsize=(8, 4))
         plt.scatter(range(len(current_cluster_set)), current_cluster_set, c=current_cluster_set, cmap='viridis',
@@ -112,15 +113,28 @@ class VisualizationHandler:
         plt.colorbar()
         plt.show()
 
-        clusters = UseDBSCAN.use_db_scan(0.2, 2, current_cluster_set)
+        clusters = UseDBSCAN.use_db_scan(0.5, 2, current_cluster_set)
 
+        unique_clusters = np.unique(clusters)
+        num_clusters = len(unique_clusters)
+        colors = plt.cm.viridis(np.linspace(0, 1, num_clusters))
         plt.figure(figsize=(8, 4))
-        plt.scatter(range(len(clusters)), clusters, c=clusters, cmap='viridis', s=50, edgecolors='k')
+        for cluster_label, color in zip(unique_clusters, colors):
+            cluster_indices = np.where(clusters == cluster_label)[0]
+            cluster_points = [current_cluster_set[i] for i in cluster_indices]
+            plt.scatter(cluster_indices, cluster_points, color=color, label=f'Cluster {cluster_label}',
+                        s=50, edgecolors='k')
+
+            if cluster_label == 2:
+                cluster_2_points = cluster_points
         plt.xlabel("Datenpunkt")
-        plt.ylabel("Cluster")
+        plt.ylabel("Wall Thickness")
         plt.title("Clustering wall_thickness without outliers")
-        plt.colorbar()
+        plt.legend()
         plt.show()
+
+        print(len(cluster_2_points))
+
 
     @staticmethod
     def handle_show_linear_regression():
@@ -143,6 +157,6 @@ class VisualizationHandler:
 
 if __name__ == "__main__":
     #VisualizationHandler.handle_visualisation_of_distance_and_velocity()
-    #VisualizationHandler.visual_data_with_clustering_db_scan()
+    VisualizationHandler.visual_data_with_clustering_db_scan()
     #VisualizationHandler.handle_scatter_chart_with_multiple_arguments()
-    VisualizationHandler.handle_show_linear_regression()
+    #VisualizationHandler.handle_show_linear_regression()

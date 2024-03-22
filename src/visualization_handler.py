@@ -113,7 +113,7 @@ class VisualizationHandler:
         plt.colorbar()
         plt.show()
 
-        clusters = UseDBSCAN.use_db_scan(0.5, 2, current_cluster_set)
+        clusters = UseDBSCAN.use_db_scan(0.6, 2, current_cluster_set)
 
         unique_clusters = np.unique(clusters)
         num_clusters = len(unique_clusters)
@@ -125,15 +125,15 @@ class VisualizationHandler:
             plt.scatter(cluster_indices, cluster_points, color=color, label=f'Cluster {cluster_label}',
                         s=50, edgecolors='k')
 
-            if cluster_label == 2:
-                cluster_2_points = cluster_points
+            if cluster_label == 1:
+                cluster_1_points = cluster_points
         plt.xlabel("Datenpunkt")
         plt.ylabel("Wall Thickness")
         plt.title("Clustering wall_thickness without outliers")
         plt.legend()
         plt.show()
 
-        print(len(cluster_2_points))
+        print(len(cluster_1_points))
 
 
     @staticmethod

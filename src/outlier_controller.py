@@ -61,7 +61,7 @@ def handle_outliers_and_prepare_for_db_push():
 
 def calculate_median_and_average_and_write_to_db():
     query = {}
-    collection = "european_dolphins"
+    collection = "european_dog"
     updates = []
     bulk_operations = []
 

@@ -3,7 +3,7 @@ from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 import certifi
 
-uri = ""
+uri = "mongodb+srv://felixkruse:eQgAyNbfBXeO5JIs@cluster0.bkat9hf.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 ca = certifi.where()
 default_client = MongoClient(uri, server_api=ServerApi('1'), tlsCAFile=ca)
 
@@ -74,8 +74,6 @@ def update_data_from_mongo(file=None, input_data=None, collection="raw_measureme
     except Exception as e:
         print(f'Fehler beim updaten der Datei: {e}')
         return None
-    finally:
-        client.close()
 
 
 def bulk_update_mongo(updates, collection="raw_measurements"):

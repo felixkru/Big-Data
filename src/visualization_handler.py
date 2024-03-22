@@ -101,6 +101,8 @@ class VisualizationHandler:
         collection = "european_dolphins"
         query = {"region": "Europe", "instrument": "Dolphin"}
         results = mongoConnection.read_data_from_mongo(query, collection)
+        data_points_from_cluster = []
+        indexes_data_points = []
 
         current_cluster_set = results[4]['wall_thickness_clean']
 
@@ -126,16 +128,23 @@ class VisualizationHandler:
                         s=50, edgecolors='k')
 
             if cluster_label == 1:
-                cluster_1_points = cluster_points
+                data_points_from_cluster = cluster_points
+                indexes_data_points = VisualizationHandler.find_original_indices(data_points_from_cluster,current_cluster_set)
         plt.xlabel("Datenpunkt")
         plt.ylabel("Wall Thickness")
         plt.title("Clustering wall_thickness without outliers")
         plt.legend()
         plt.show()
 
-        print(len(cluster_1_points))
-        return cluster_1_points
+        return data_points_from_cluster, indexes_data_points
 
+    @staticmethod
+    def find_original_indices(cluster_points, current_cluster_set):
+        original_indices = []
+        for point in cluster_points:
+            index = current_cluster_set.index(point)
+            original_indices.append(index)
+        return original_indices
 
     @staticmethod
     def handle_show_linear_regression():

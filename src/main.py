@@ -2,6 +2,7 @@ import file_reader_h5
 import check_data
 import mongoConnection
 from calculate_location_parameters import CalculateLocationParameters
+import heatmap_visualizer
 
 
 def handle_file_reader_and_write_to_database():
@@ -18,15 +19,22 @@ def handle_file_reader_and_write_to_database():
 
 
 if __name__ == "__main__":
+
+    heatmap_visualizer.heatmap_seaborn()
+
     """
     Die Funktion verarbeitet das komplette Datenset
     """
     #handle_file_reader_and_write_to_database()
+    """
+    query_counter_result = mongoConnection.read_data_from_mongo({
+            "region": {"$in": ["Europe"]},
+            "instrument": {"$in": ["Dolphin"]}
+        }, "complete_dataset")
 
-"""
-    query_counter_result = mongoConnection.count_data_from_mongo({"region": "Africa"})
-    print(f"Soviele Datensätze entsprechen deinem Query: {query_counter_result}")
-
+    mongoConnection.send_data_to_mongo(query_counter_result, "european_dolphins")
+    """
+    """
     #mongoConnection.send_data_to_mongo(dataset)
 
 

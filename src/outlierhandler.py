@@ -11,7 +11,7 @@ class OutlierHandler:
             q1 = np.percentile(data_array, 25)
             q3 = np.percentile(data_array, 75)
             iqr = q3 - q1
-            mean = np.mean(data_array)
+            mean = np.median(data_array)
 
             lower_bound = q1 - 1.5 * iqr
             upper_bound = q3 + 1.5 * iqr

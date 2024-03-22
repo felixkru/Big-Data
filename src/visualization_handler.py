@@ -134,6 +134,7 @@ class VisualizationHandler:
         plt.show()
 
         print(len(cluster_1_points))
+        return cluster_1_points
 
 
     @staticmethod
